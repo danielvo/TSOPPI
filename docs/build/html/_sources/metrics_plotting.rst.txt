@@ -1,0 +1,103 @@
+**Metrics plotting** tool
+=========================
+
+About
+-----
+The LocalApp software calculates a wide variety of metrics during its analysis
+runs, and when the primary analysis for a given run is finished,
+all the metrics are collected and saved into the *MetricsOutput.tsv* file
+in the Results sub-directory at the output destination.
+Similarly, Illumina sequencers generate
+a *RunCompletionStatus.xml* file with selected sequencing metrics
+in their output directory for a given sequencing run.
+
+The "process_metrics_files" TSOPPI tool offers visualization of LocalApp-
+and sequencer-generated metrics for sets of samples across multiple sequencing/analysis runs.
+The plots can be useful for identifying sample/run outliers, and for monitoring
+long-terms trends in the sequencing and primary analysis outputs.
+
+Input files
+-----------
+- **[LocalApp_output_directory]/Results/MetricsOutput.tsv** files for n>=1 runs
+  (these are specified with the *\--metrics_file* parameter);
+- **[sequencer_output_directory]/RunCompletionStatus.xml** files for n>=1 runs
+  (these are specified with the *\--run_completion_status_file* parameter).
+
+
+Running the tool
+----------------
+Command line options:
+
+.. code-block::
+
+   usage: process_metrics_files.py [-h] [-v] -m METRICS_FILE -r
+                                RUN_COMPLETION_STATUS_FILE -l RUN_LABEL -o
+                                OUTPUT_DIRECTORY -s
+                                HOST_SYSTEM_MOUNTING_DIRECTORY
+                                [-c CONTAINER_MOUNTING_DIRECTORY]
+                                [-i HIGHLIGHTED_RUN_LABEL]
+
+   Process input metrics files and plot the retrieved metrics data with R (all
+   output will be stored in the specified output directory). X>=1 runs can be
+   processed together; all run-related parameters need to be supplied exactly X
+   times. The order of supplied values matters (e.g., the Nth input metrics file
+   will be tied to the Nth supplied run label).
+
+    -m METRICS_FILE, --metrics_file METRICS_FILE
+                        absolute path to the MetricsOutput.tsv file of a given
+                        TSO500 LocalApp analysis run
+    -r RUN_COMPLETION_STATUS_FILE, --run_completion_status_file RUN_COMPLETION_STATUS_FILE
+                        absolute path to the RunCompletionStatus.xml file of a
+                        given TSO500 sequencing run
+    -l RUN_LABEL, --run_label RUN_LABEL
+                        a label that should be used for referring to given run
+                        in the output files and plots
+    -o OUTPUT_DIRECTORY, --output_directory OUTPUT_DIRECTORY
+                        absolute path to the directory in which all output
+                        should be stored
+    -s HOST_SYSTEM_MOUNTING_DIRECTORY, --host_system_mounting_directory HOST_SYSTEM_MOUNTING_DIRECTORY
+                        absolute path to the host system mounting directory;
+                        the specified directory should include all input and
+                        output file paths in its directory tree
+   optional arguments:
+    -h, --help          show this help message and exit
+    -v, --version       show program`s version number and exit
+    -c CONTAINER_MOUNTING_DIRECTORY, --container_mounting_directory CONTAINER_MOUNTING_DIRECTORY
+                        container`s inner mounting point; the host system
+                        mounting directory path/prefix will be replaced by the
+                        container mounting directory path in all input and
+                        output file paths (this parameter likely shouldn`t be
+                        changed)
+    -i HIGHLIGHTED_RUN_LABEL, --highlighted_run_label HIGHLIGHTED_RUN_LABEL
+                        label of the run which should be highlighted in the
+                        output plots (if not supplied, the last supplied label
+                        will determine the highlighted run)
+
+Example invocation using the Docker image:
+
+.. code-block::
+
+  $ [sudo] docker run \
+      --rm \
+      -it \
+      -v /hs_prefix_path:/inpred/data \
+      inpred/tsoppi_main:v0.1 \
+        python /inpred/user_scripts/process_metrics_files.py \
+          --metrics_file /hs_prefix_path/analysis/run1/Results/MetricsOutput.tsv \
+          --metrics_file /hs_prefix_path/analysis/run2/Results/MetricsOutput.tsv \
+          --metrics_file /hs_prefix_path/analysis/run3/Results/MetricsOutput.tsv \
+          --run_completion_status_file /hs_prefix_path/sequences/run1/RunCompletionStatus.xml \
+          --run_completion_status_file /hs_prefix_path/sequences/run2/RunCompletionStatus.xml \
+          --run_completion_status_file /hs_prefix_path/sequences/run3/RunCompletionStatus.xml \
+          --run_label run_1 \
+          --run_label run_2 \
+          --run_label run_3 \
+          --output_directory /hs_prefix_path/postprocessing/metrics_plots \
+          --host_system_mounting_directory /hs_prefix_path
+
+Output files
+------------
+- **[tool_output_directory]/TSO500_run_metrics.pdf**: the main output file, with metric-wise plots;
+- **[tool_output_directory]/intermediate_metrics_files/joint_sequencing_QC_file.tsv**: aggregated sequencing-run metrics for all input *RunCompletionStatus.xml* files;
+- **[tool_output_directory]/intermediate_metrics_files/master_metrics_table.tsv**: aggregated analysis-run metrics for all input *MetricsOutput.tsv* files;
+- **[tool_output_directory]/intermediate_metrics_files/[run_label_N]_metrics.tsv**: parsed and transposed analysis-run metrics table for Nth input *MetricsOutput.tsv* file (the corresponding *run_label* values is used in the file name).

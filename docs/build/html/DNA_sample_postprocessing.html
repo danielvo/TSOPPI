@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DNA sample post-processing tool &#8212; TSOPPI: TSO500 Post-Processing for InPreD 21-04 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="RNA sample post-processing tool" href="RNA_sample_postprocessing.html" />
+    <link rel="prev" title="Variant recurrence table creation tool" href="variant_recurrence_table_creation.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="dna-sample-post-processing-tool">
+<h1><strong>DNA sample post-processing</strong> tool<a class="headerlink" href="#dna-sample-post-processing-tool" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>During DNA sample analysis, the LocalApp pipeline generates sample metrics,
+calls small variants (SNVs and INDELs up to about 25 bp in size) and copy number
+variants (<em>CNV</em>) and evaluates the sample’s microsatellite (in-)stability status
+(<em>MSI</em>/MSS).
+(The pipeline also calculates tumor mutational burden [<em>TMB</em>] from its called/filtered
+small variant list, but InPreD currently uses a slightly different TMB calculation method.)</p>
+<p>TSOPPI’s “DNA_sample_postprocessing” tool is meant to post-process LocalApp outputs
+available for individual DNA samples. Currently, the tool:</p>
+<ul class="simple">
+<li><p>creates a summary metric plot usable at molecular tumor board meetings;</p></li>
+<li><p>when available, merges tumor and normal data for given matched sample pair;</p></li>
+<li><p>aggregates information from multiple small variant files into a single table,
+and explicitly assigns a LocalApp-derived class to each variant;</p></li>
+<li><p>annotates the small variants with <a class="reference external" href="https://github.com/sigven/pcgr">PCGR</a>/<a class="reference external" href="https://github.com/sigven/cpsr">CPSR</a>
+and uses the collected information in order the prioritize the variants
+for the subsequent quality-control and interpretation;</p></li>
+<li><p>aggregates information from multiple CNV files into a single table,
+and adjusts the copy number results based on user-provided tumor content value;</p></li>
+<li><p>creates an HTML file that simplifies small variant browsing in IGV;</p></li>
+<li><p>generates various plots.</p></li>
+</ul>
+<p>Please consult the <a class="reference internal" href="#dna-pp-output-files-label"><span class="std std-ref">Output files</span></a> section for details regarding
+output file formats.</p>
+<div class="section" id="additional-notes">
+<h3>Additional notes<a class="headerlink" href="#additional-notes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Small variants passing technical quality filters, such as coverage and support,
+are divided into 4 classes based on the LocalApp output:</p>
+<ul>
+<li><p><strong>BL</strong>: variants located within regions blacklisted in the LocalApp due to background noise levels;</p></li>
+<li><p><strong>GL_DB</strong>: variants present in germline databases (allele count ≥10 in any of the GnomAD exome, GnomAD genome and 1000 genomes database);</p></li>
+<li><p><strong>GL_P</strong>: variants assumed to be germline by proximity (having allelic fractions similar to those of known germline variants present on the same chromosome);</p></li>
+<li><p><strong>SOM</strong>: the remaining unfiltered variants, assumed to be somatic.</p></li>
+</ul>
+</li>
+<li><p>The output HTML file enables IGV session control (e.g., BAM-file loading
+and view-centering on variant locations with a single click) by utilizing
+<a class="reference external" href="https://software.broadinstitute.org/software/igv/ControlIGV">IGV port commands</a>.
+The following tool parameters are used exclusively for the purposes of generating
+the IGV HTML file:</p>
+<ul>
+<li><p><strong>--initial_port_number</strong>: port number (<em>n</em>, by default “60151”) dedicated
+to “user number 1” (as specified by the first string within the
+<em>--port_number_labels</em> parameter value), users number <em>2, .., m</em> will be
+assigned port numbers <em>n+1, .., n+m</em>;</p></li>
+<li><p><strong>--port_number_labels</strong>: labels for ports that will be used for IGV port commands
+(to enable concurrent use by multiple users, each user should have a dedicated port number);</p></li>
+<li><p><strong>--igv_session_file</strong>: path to an IGV session file that should be made loadable
+directly from the HTML file.</p></li>
+</ul>
+</li>
+<li><p>The tool is meant to work both with and without matched normals. The matched samples
+do not need to be sequenced in the same run. If the <em>--normal_available</em> parameter
+is set to “True”, normal sample input will be expected (please refer to the
+command line options below for the complete list of optional and required
+parameters related to the normal sample).</p></li>
+<li><p>If all input sample IDs were created according to the
+<a class="reference internal" href="inpred_nomenclature.html"><span class="doc">InPreD sample ID nomenclature</span></a>, it is possible
+to take advantage of information coded within them.
+Currently, the nomenclature rules are only used to determine and display
+the sample type in the tool’s output metric plots, but the functionality will
+likely be expanded in the future. (Please see the option
+<em>--inpred_nomenclature</em> below.)</p></li>
+<li><p>The <a class="reference internal" href="inpred_nomenclature.html"><span class="doc">InPreD nomenclature document</span></a>
+(or the original <a class="reference external" href="https://github.com/sigven/pcgr">PCGR documentations</a>) can
+also be used for selecting the correct value of the <em>--tumor_site</em> parameter
+for samples not following the InPreD ID nomenclature.
+Leaving this parameter with its default value (0) will have an impact on
+variants’ annotation results (specifically, their ACMG/AMP Tier ranking).</p></li>
+<li><p>Taking advantage of the
+<a class="reference internal" href="variant_recurrence_table_creation.html"><span class="doc">variant recurrence table tool</span></a>
+and using its output with this tool is strongly recommended (please see the
+option <em>--variant_recurrence_table</em> below).</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="input-files">
+<h2>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h2>
+<p>Small variants:</p>
+<ul class="simple">
+<li><p><strong>[LocalApp_output_directory]/Results/[Pair_ID]/[sample_ID]_MergedSmallVariants.genome.vcf</strong>
+file(s) for the referenced input sample(s);</p></li>
+<li><p><strong>[LocalApp_output_directory]/Results/[Pair_ID]/[sample_ID]_TMB_Trace.tsv</strong>
+file(s) for the referenced input sample(s).</p></li>
+</ul>
+<p>Copy number variants:</p>
+<ul class="simple">
+<li><p><strong>[LocalApp_output_directory]/Results/[Pair_ID]/[sample_ID]_CopyNumberVariants.vcf</strong>
+file(s) for the referenced input sample(s);</p></li>
+<li><p><strong>[LocalApp_run_output]/Logs_Intermediates/CnvCaller/[sample_ID]/[sample_ID]_normalizedBinCount.tsv</strong>
+file(s) for the referenced input sample(s);</p></li>
+<li><p><strong>[LocalApp_run_output]/Logs_Intermediates/CnvCaller/[sample_ID]/[sample_ID]_foldChange.tsv</strong>
+file(s) for the referenced input sample(s).</p></li>
+</ul>
+<p>Other:</p>
+<ul class="simple">
+<li><p><strong>[LocalApp_output_directory]/Results/MetricsOutput.tsv</strong> file(s) for the
+analysis run(s) that included the referenced input sample(s);</p></li>
+<li><p><strong>[LocalApp_run_output]/Results/[Pair_ID]/[Pair_ID]_CombinedVariantOutput.tsv</strong>
+file(s) for the referenced input sample(s);</p></li>
+<li><p><strong>[LocalApp_run_output]/Logs_Intermediates/StitchedRealigned/[sample_ID]/[sample_ID].bam</strong>
+files for the referenced input sample(s);</p></li>
+<li><p><strong>[LocalApp_run_output]/Logs_Intermediates/DnaRealignment/[sample_ID]/[sample_ID].bam</strong>
+files for the referenced input sample(s).</p></li>
+</ul>
+<p>All input files are localized automatically based on the input parameter values.</p>
+</div>
+<div class="section" id="running-the-tool">
+<h2>Running the tool<a class="headerlink" href="#running-the-tool" title="Permalink to this headline">¶</a></h2>
+<p>Command line options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>process_DNA_sample.sh [options]
+
+-h | --help                                             Prints this help message (the program exits).
+-t [tid] | --tumor_id [tid]                             Required. ID of the tumor sample (as used in the LocalApp output files).
+-v [rpath] | --tumor_localapp_run_directory [rpath]     Required. Absolute path to main LocalApp output directory generated for the sequencing run with processed tumor sample.
+-o [opath] | --output_directory [opath]                 Required. Absolute path to the directory in which all of the output files should be stored. If not existing, the directory will be created. All existing files will be overwritten.
+-s [hsmd] | --host_system_mounting_directory [hsmd]     Required. Absolute path to the host system mounting directory; the specified directory should include all input and output file paths in its directory tree.&quot;
+-c [cmd] | --container_mounting_directory [cmd]         Optional. Container`s inner mounting point; the host system mounting directory path/prefix will be replaced by the container mounting directory path in all input and output file paths (the default value of &quot;/inpred/data&quot; likely shouldn`t be changed).&quot;
+-u [tpid] | --tumor_pair_id [tpid]                      Optional. Required if the LocalApp pipeline was run with the &quot;Pair_ID&quot; value specified for the tumor sample (in that case, use the same value as was specified in the corresponding sample sheet).
+-d [did] | --output_tumor_id [did]                      Optional. Tumor sample ID that will be used in the output files (if not provided, the supplied `--tumor_id` value will be used).
+-p [tp] | --tumor_purity [tp]                           Optional. Estimated tumor purity (a value in range (0, 1]). If not supplied, default tumor purity value of 0.5 will be used.
+-j [ts] | --tumor_site [ts]                             Optional. One of the tumor sites recognized by PCGR (denoted by integers in range [0, 30]). (default value: 0 [no tumor site specified])
+-k [True|False] | --normal_available [True|False]       Optional. Setting this parameter to &quot;True&quot; enables post-processing of the tumor sample together with a matched normal (parameters specifying the normal sample details need to be set in that case). (default value: False)
+-n [nid] | --normal_id [nid]                            Optional. Required if `normal_available` is set to &quot;True&quot;. ID of the tumor sample (as used in the LocalApp output files)
+-l [npid] | --normal_pair_id [npid]                     Optional. Required if `normal_available` is set to &quot;True&quot; and if the LocalApp pipeline was run with the &quot;Pair_ID&quot; value specified for the normal sample (in that case, use the same value as was specified in the corresponding sample sheet).
+-m [npath] | --normal_localapp_run_directory [npath]    Optional. Required if `normal_available` is set to &quot;True&quot;. Absolute path to main LocalApp output directory generated for the sequencing run with processed normal sample.
+-b [bid] | --output_normal_id [bid]                     Optional. Normal sample ID that will be used in the output files (if not provided, the supplied `--normal_id` value will be used).
+-r [ipn] | --initial_port_number [ipn]                  Optional. The lowest port number that will be utilized for execution of IGV commands; integers following the initial port number will be used if multiple port numbers are necessary (the total number of necessary ports will correspond to the number of labels in the supplied `--port_number_labels` parameter value). Use integers larger than zero. (default value: 60151)
+-i [pnl] | --port_number_labels [pnl]                   Optional. String values that will be used to label the intended use/user of the individual port numbers. Muliple labels (separated by spaces and all together enclosed by quotes) can be supplied. (default value: &quot;User1 User2&quot;)
+-e [isf] | --igv_session_file [isf]                     Optional. Path to an IGV session file that should be used for viewing the identified variants. If supplied, the path will be used as-is for IGV command html links creation (the resulting links are meant for outside-the-container use only). (no default value)
+-a [True|False] | --enable_igv_snapshots [True|False]   Optional. Enable taking of IGV snapshots. (default value: False)
+-f [rff] | --reference_fasta_file [rff]                 Optional. Required if `--enable_igv_snapshots` is set to &quot;True&quot;. Absolute path to an indexed reference FASTA file (e.g., the LocalApp pipeline`s reference fasta file, which is located in `[LocalApp_directory]/resources/genomes/hg19_hardPAR/genome.fa`).
+-q [vrt] | --variant_recurrence_table [vrt]             Optional. Absolute path to a variant recurrence table generated by the &quot;update_variant_recurrence_table&quot; TSOPPI tool. If supplied, the output small variant interpretation table will include the recurrence information. (default value: &quot;NA&quot;)
+-z [lav] | --localapp_version [lav]                     Optional. Version of the LocalApp pipeline that was used for generating the input of this tool. (default value: &quot;2.0.1.4&quot;; change to &quot;2.2.0.12&quot; when post-processing samples analyzed with pipeline version 2.2.0.12)
+-g [True|False] | --inpred_nomenclature [True|False]    Optional. The sample IDs follow InPreD nomenclature (all sample IDs are in format &quot;PPPyyyy-Ann-Bpq-Cll&quot;; please refer to the TSOPPI documentation for details). (default value: False)
+</pre></div>
+</div>
+<p>Example invocation using the Docker image:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ [sudo] docker run \
+    --rm \
+    -it \
+    -v /hs_prefix_path:/inpred/data \
+    inpred/tsoppi_main:v0.1 \
+      bash /inpred/user_scripts/process_DNA_sample.sh \
+        --tumor_purity 0.6 \
+        --tumor_site 5 \
+        --tumor_id tumor_A \
+        --tumor_pair_id pair_A \
+        --tumor_localapp_run_directory /hs_prefix_path/analysis/run1 \
+        --normal_available True \
+        --normal_id normal_A \
+        --normal_pair_id pair_A \
+        --normal_localapp_run_directory /hs_prefix_path/analysis/run2 \
+        --output_directory /hs_prefix_path/postprocessing/run1/sample_A \
+        --variant_recurrence_table /hs_prefix_path/postprocessing/variant_recurrence_table_[date].tsv \
+        --igv_session_file /hs_prefix_path/IGV_data/TSO500_session_file.xml \
+        --port_number_labels &quot;Alice Bob&quot; \
+        --host_system_mounting_directory /hs_prefix_path
+</pre></div>
+</div>
+</div>
+<div class="section" id="output-files">
+<span id="dna-pp-output-files-label"></span><h2>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
+<p>Small variants:</p>
+<ul class="simple">
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_small_variants_all.vcf</strong>:
+pre-annotation VCF file containing aggregated LocalApp information
+for all small variants falling into one of the four recognized classes
+(BL/GL_DB/GL_P/SOM);</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_small_variants_somatic.vcf</strong>:
+same as the file above, but only with <em>likely somatic</em> variants
+(SOM class variants for analyses without a matched normal,
+tumor-only variants for matched-sample analyses);
+please note that the purpose of this file is to “contain the available likely
+non-sensitive variant data”; all variants should undergo manual quality control
+before being considered reliably somatic;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_small_variant_AF_plots.pdf</strong>:
+per-class allelic fraction distribution plots of all small variants;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_small_variant_overview_by_type.tsv</strong>:
+small variant counts broken down by variant type (SNV, MNV, INDEL) and class;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_small_variant_overview_by_tier.tsv</strong>:
+small variant counts broken down by variant type (SNV, MNV, INDEL) and tier;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_PCGR_0.9.1_all</strong>:
+standard PCGR output directory -
+generated from the <em>[output_tumor_id]_small_variants_all.vcf</em> file mentioned above;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_PCGR_0.9.1_somatic</strong>:
+standard PCGR output directory -
+generated from the <em>[output_tumor_id]_small_variants_somatic.vcf</em> file mentioned above;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_CPSR_0.6.1_all_normal_variants</strong>:
+standard CPSR output directory -
+generated from normal variant data (if available);</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_CPSR_0.6.1_all_tumor_variants</strong>:
+standard CPSR output directory -
+generated from tumor variant data (if the matched control is not available);</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_small_variant_table.tsv</strong>:
+a table with annotated prioritized variants, intended for variant quality
+checking and interpretation;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_predisposition_gene_variant_table_*.tsv</strong>:
+variants located within the 27 cancer predisposition genes listed in the
+<em>“Germline-focused analysis of tumour-only sequencing: recommendations from the ESMO Precision Medicine Working Group”</em> paper (doi:10.1093/annonc/mdz136);</p></li>
+<li><p><strong>[tool_output_dir]/IGV_links/[output_tumor_id]_IGV_links_all_variants.port_[port_number]_[port_label].html</strong>:
+an IGV port command HTML file with all variants listed in the <em>[output_tumor_id]_small_variants_somatic.vcf</em> file
+(generated per port number/port label pair);</p></li>
+<li><p><strong>[tool_output_dir]/IGV_links/[output_tumor_id]_IGV_links_interpretation_table_variants.port_[port_number]_[port_label].html</strong>:
+an IGV port command HTML file with all variants listed in the <em>[output_tumor_id]_small_variant_table.tsv</em> file
+(generated per port number/port label pair);</p></li>
+</ul>
+<p>Copy number variants:</p>
+<ul class="simple">
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_merged_CNV_data.tsv</strong>: all available
+copy number information for the input samples in a single table;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_merged_CNV_summary_CN_sorted.tsv</strong>:
+gene-wise copy number summary for the input samples, sorted by copy number values;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_merged_CNV_summary_location_sorted.tsv</strong>:
+gene-wise copy number summary for the input samples, sorted by genes’ genomic location;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_CNV_plots.pdf</strong>: all generated copy number-related plots.</p></li>
+</ul>
+<p>Other:</p>
+<ul class="simple">
+<li><p><strong>[tool_output_dir]/[output_sample_id]_sample_QC_plot.pdf</strong>: output metrics
+plot in PDF format (per input sample);</p></li>
+<li><p><strong>[tool_output_dir]/[output_sample_id]_sample_QC_plot.png</strong>: output metrics
+plot in PNG format (per input sample);</p></li>
+<li><p>additional (intermediate and log) files.</p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TSOPPI: TSO500 Post-Processing for InPreD</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Table of contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics_plotting.html"><strong>Metrics plotting</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>DNA sample post-processing</strong> tool</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-files">Input files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-tool">Running the tool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RNA_sample_postprocessing.html"><strong>RNA sample post-processing</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RNA_sample_postprocessing.html#additional-notes">Additional notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="variant_recurrence_table_creation.html" title="previous chapter"><strong>Variant recurrence table creation</strong> tool</a></li>
+      <li>Next: <a href="RNA_sample_postprocessing.html" title="next chapter"><strong>RNA sample post-processing</strong> tool</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Daniel Vodak.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/DNA_sample_postprocessing.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

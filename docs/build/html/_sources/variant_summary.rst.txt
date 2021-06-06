@@ -1,0 +1,14 @@
+[Tool] Variant summary creation
+===============================
+
+Functionality
+-------------
+
+Input files
+-----------
+
+Command line options
+--------------------
+
+Output files
+------------

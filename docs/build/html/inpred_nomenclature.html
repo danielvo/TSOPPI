@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InPreD sample ID nomenclature &#8212; TSOPPI: TSO500 Post-Processing for InPreD 21-04 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Frequently asked questions" href="FAQ.html" />
+    <link rel="prev" title="RNA sample post-processing tool" href="RNA_sample_postprocessing.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="inpred-sample-id-nomenclature">
+<h1>InPreD sample ID nomenclature<a class="headerlink" href="#inpred-sample-id-nomenclature" title="Permalink to this headline">¶</a></h1>
+<p>InPreD sample IDs should be recorded with 19 characters, in format <em>PPPyyyy-Ann-Bpq-Cll</em>, where:</p>
+<ul class="simple">
+<li><p><strong>PPP</strong> is a three-letter project name (<em>IPD</em> in case of the current Oslo InPreD project);</p></li>
+<li><p><strong>yyyy</strong> is a four-digit patient code (all samples of a given patient should have the same patient code within a specific project);</p></li>
+<li><p><strong>A</strong> is a single-letter nucleic acid type code:</p>
+<ul>
+<li><p><em>D</em>: DNA;</p></li>
+<li><p><em>R</em>: RNA;</p></li>
+<li><p><em>C</em>: cell-free samples;</p></li>
+</ul>
+</li>
+<li><p><strong>nn</strong> is a two-digit assay type code:</p>
+<ul>
+<li><p><em>01</em>: TSO500 DNA assay;</p></li>
+<li><p><em>02</em>: <a class="reference external" href="https://archerdx.com/research-products/solid-tumor-research/fusionplex-lung/">Archer FusionPlex Lung assay</a>;</p></li>
+<li><p><em>03</em>: TSO500 RNA assay;</p></li>
+<li><p><em>50</em>: Twist Human Core Exome Plus kit (DNA);</p></li>
+<li><p><em>51</em>: TruSeq Stranded mRNA kit;</p></li>
+</ul>
+</li>
+<li><p><strong>B</strong> is a single-letter sample type code:</p>
+<ul>
+<li><p><em>N</em>: normal/control;</p></li>
+<li><p><em>P</em>: primary tumor, naive;</p></li>
+<li><p><em>p</em>: primary tumor, post-treatment;</p></li>
+<li><p><em>R</em>: regional metastasis, naive;</p></li>
+<li><p><em>r</em>: regional metastasis, post-treatment;</p></li>
+<li><p><em>D</em>: distal metastasis, naive;</p></li>
+<li><p><em>d</em>: distal metastasis, post-treatment;</p></li>
+<li><p><em>C</em>: cell-line;</p></li>
+<li><p><em>L</em>: liquid;</p></li>
+<li><p><em>T</em>: tumor [deprecated];</p></li>
+<li><p><em>M</em>: metastasis [deprecated];</p></li>
+</ul>
+</li>
+<li><p><strong>p</strong> is the <em>(n-1)th</em> library preparation attempt:</p>
+<ul>
+<li><p><em>0</em>: first try;</p></li>
+<li><p><em>1</em>: second try (e.g., after cleaning, new extraction);</p></li>
+<li><p><em>2</em>: third try (ex: cleaning, new extraction++);</p></li>
+<li><p>…</p></li>
+</ul>
+</li>
+<li><p><strong>q</strong> is the <em>nth</em> biological replicate (e.g., using a different block or stock):</p>
+<ul>
+<li><p><em>1</em></p></li>
+<li><p><em>2</em></p></li>
+<li><p>…</p></li>
+</ul>
+</li>
+<li><p><strong>C</strong> is a single-letter code for sample material:</p>
+<ul>
+<li><p><em>A</em>: archived (FFPE);</p></li>
+<li><p><em>B</em>: blood;</p></li>
+<li><p><em>C</em>: cytology;</p></li>
+<li><p><em>F</em>: fresh frozen;</p></li>
+</ul>
+</li>
+<li><p><strong>ll</strong> is a two-digit code for tumor site (these codes are adopted from <a class="reference external" href="https://github.com/sigven/pcgr">PCGR</a>):</p>
+<ul>
+<li><p><em>01</em>: Adrenal Gland;</p></li>
+<li><p><em>02</em>: Ampulla of Vater;</p></li>
+<li><p><em>03</em>: Biliary Tract;</p></li>
+<li><p><em>04</em>: Bladder/Urinary Tract;</p></li>
+<li><p><em>05</em>: Bone;</p></li>
+<li><p><em>06</em>: Breast;</p></li>
+<li><p><em>07</em>: Cervix;</p></li>
+<li><p><em>08</em>: CNS/Brain;</p></li>
+<li><p><em>09</em>: Colon/Rectum;</p></li>
+<li><p><em>10</em>: Esophagus/Stomach;</p></li>
+<li><p><em>11</em>: Eye;</p></li>
+<li><p><em>12</em>: Head and Neck;</p></li>
+<li><p><em>13</em>: Kidney;</p></li>
+<li><p><em>14</em>: Liver;</p></li>
+<li><p><em>15</em>: Lung;</p></li>
+<li><p><em>16</em>: Lymphoid;</p></li>
+<li><p><em>17</em>: Myeloid;</p></li>
+<li><p><em>18</em>: Ovary/Fallopian Tube;</p></li>
+<li><p><em>19</em>: Pancreas;</p></li>
+<li><p><em>20</em>: Peripheral Nervous System;</p></li>
+<li><p><em>21</em>: Peritoneum;</p></li>
+<li><p><em>22</em>: Pleura;</p></li>
+<li><p><em>23</em>: Prostate;</p></li>
+<li><p><em>24</em>: Skin;</p></li>
+<li><p><em>25</em>: Soft Tissue;</p></li>
+<li><p><em>26</em>: Testis;</p></li>
+<li><p><em>27</em>: Thymus;</p></li>
+<li><p><em>28</em>: Thyroid;</p></li>
+<li><p><em>29</em>: Uterus;</p></li>
+<li><p><em>30</em>: Vulva/Vagina.</p></li>
+</ul>
+</li>
+</ul>
+<p><em>X</em> can be used to replace any missing (yet unknown) information.</p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TSOPPI: TSO500 Post-Processing for InPreD</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Table of contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics_plotting.html"><strong>Metrics plotting</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DNA_sample_postprocessing.html"><strong>DNA sample post-processing</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RNA_sample_postprocessing.html"><strong>RNA sample post-processing</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RNA_sample_postprocessing.html#additional-notes">Additional notes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">InPreD sample ID nomenclature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="RNA_sample_postprocessing.html" title="previous chapter"><strong>RNA sample post-processing</strong> tool</a></li>
+      <li>Next: <a href="FAQ.html" title="next chapter">Frequently asked questions</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Daniel Vodak.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/inpred_nomenclature.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

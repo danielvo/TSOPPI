@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'TSO500 post-processing'
+project = 'TSOPPI: TSO500 Post-Processing for InPreD'
 copyright = '2021, Daniel Vodak'
 author = 'Daniel Vodak'
 

@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RNA sample post-processing tool &#8212; TSOPPI: TSO500 Post-Processing for InPreD 21-04 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="InPreD sample ID nomenclature" href="inpred_nomenclature.html" />
+    <link rel="prev" title="DNA sample post-processing tool" href="DNA_sample_postprocessing.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="rna-sample-post-processing-tool">
+<h1><strong>RNA sample post-processing</strong> tool<a class="headerlink" href="#rna-sample-post-processing-tool" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>During RNA sample analysis, the LocalApp pipeline generates sample metrics
+and calls fusion and splice variants.</p>
+<p>TSOPPI’s “RNA_sample_postprocessing” tool is meant to post-process LocalApp outputs
+available for individual RNA samples. Currently, the tool:</p>
+<ul class="simple">
+<li><p>creates a summary metric plot usable at molecular tumor board meetings;</p></li>
+<li><p>extracts fusion variant information from LocalApp-generated output.</p></li>
+</ul>
+<p>(Expression/fusion break-point visualization and small variant support calculation
+are in development, but not yet available.)</p>
+<div class="section" id="additional-notes">
+<h3>Additional notes<a class="headerlink" href="#additional-notes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>If all input sample IDs were created according to the
+<a class="reference internal" href="inpred_nomenclature.html"><span class="doc">InPreD sample ID nomenclature</span></a>, it is possible
+to take advantage of information coded within them.
+Currently, the nomenclature rules are only used to determine and display
+the sample type in the tool’s output metric plots, but the functionality will
+likely be expanded in the future. (Please see the option
+<em>--inpred_nomenclature</em> below.)</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="input-files">
+<h2>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>[LocalApp_output_directory]/Results/MetricsOutput.tsv</strong> file for the
+analysis run that included the referenced RNA input sample;</p></li>
+<li><p><strong>[LocalApp_output_directory]/Logs_Intermediates/RnaFusionFiltering/[sample_ID]/[sample_ID].csv</strong>
+file for the referenced RNA input sample.</p></li>
+</ul>
+<blockquote>
+<div><p>The location of both files is automatically determined based on the user-supplied
+value for parameter <em>--tumor_localapp_run_directory</em>.</p>
+</div></blockquote>
+</div>
+<div class="section" id="running-the-tool">
+<h2>Running the tool<a class="headerlink" href="#running-the-tool" title="Permalink to this headline">¶</a></h2>
+<p>Command line options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>process_RNA_sample.sh [options]
+
+-h | --help                                           Prints this help message (the program exits).
+-t [tid] | --tumor_id [tid]                           Required. ID of the tumor sample (as used in the LocalApp output files).
+-o [opath] | --output_directory [opath]               Required. Absolute path to the directory in which all of the output files should be stored. If not existing, the directory will be created. All existing files will be overwritten.
+-v [rpath] | --tumor_localapp_run_directory [rpath]   Required. Absolute path to main LocalApp output directory generated for the sequencing run with processed sample.
+-s [hsmd] | --host_system_mounting_directory [hsmd]   Required. Absolute path to the host system mounting directory; the specified directory should include all input and output file paths in its directory tree.&quot;
+-d [did] | --output_tumor_id [did]                    Optional. Tumor sample ID that will be used in the output files (if not provided, the supplied `--tumor_id` value will be used).
+-u [tpid] | --tumor_pair_id [tpid]                    Optional. Use only if the LocalApp pipeline was run with the &quot;Pair_ID&quot; value specified for the processed RNA sample (in that case, use the same value as was specified in the corresponding sample sheet).
+-c [cmd] | --container_mounting_directory [cmd]       Optional. Container`s inner mounting point; the host system mounting directory path/prefix will be replaced by the container mounting directory path in all input and output file paths (the default value of &quot;/inpred/data&quot; likely shouldn`t be changed).&quot;
+-g [True|False] | --inpred_nomenclature [True|False]  Optional. The sample IDs follow InPreD nomenclature (all sample IDs are in format &quot;PPPyyyy-Ann-Bpq-Cll&quot;; please refer to the TSOPPI documentation for details). (default value: False)
+</pre></div>
+</div>
+<p>Example invocation using the Docker image:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ [sudo] docker run \
+    --rm \
+    -it \
+    -v /hs_prefix_path:/inpred/data \
+    inpred/tsoppi_main:v0.1 \
+      bash /inpred/user_scripts/process_RNA_sample.sh \
+        --tumor_id sample_A \
+        --tumor_pair_id pair_A \
+        --tumor_localapp_run_directory /hs_prefix_path/analysis/run1 \
+        --output_directory /hs_prefix_path/postprocessing/run1/sample_A \
+        --host_system_mounting_directory /hs_prefix_path
+</pre></div>
+</div>
+</div>
+<div class="section" id="output-files">
+<h2>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>[tool_output_dir]/[TMP]/[output_tumor_id]_transposed_metrics_output.tsv</strong>:
+a condensed and transposed version of the input <em>MetricsOutput.tsv</em> file;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_sample_QC_plot.pdf</strong>: output metrics
+plot in PDF format;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_sample_QC_plot.png</strong>: output metrics
+plot in PNG format;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_fusions_all.tsv</strong>: all variants from
+the input fusion CSV file, with the following differences: omitting the
+“Contig” field, replacing comma-separators with tab-separators and replacing
+missing values with “.” symbols;</p></li>
+<li><p><strong>[tool_output_dir]/[output_tumor_id]_fusions_PASS.tsv</strong>: same as the file
+above, but only including variants with value “PASS” in the “Filter” field.</p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TSOPPI: TSO500 Post-Processing for InPreD</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Table of contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics_plotting.html"><strong>Metrics plotting</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DNA_sample_postprocessing.html"><strong>DNA sample post-processing</strong> tool</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>RNA sample post-processing</strong> tool</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-files">Input files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-tool">Running the tool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="DNA_sample_postprocessing.html" title="previous chapter"><strong>DNA sample post-processing</strong> tool</a></li>
+      <li>Next: <a href="inpred_nomenclature.html" title="next chapter">InPreD sample ID nomenclature</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Daniel Vodak.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/RNA_sample_postprocessing.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
