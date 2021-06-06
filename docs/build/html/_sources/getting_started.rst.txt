@@ -34,7 +34,7 @@ metrics generated during the sequencing, can be visualized by
 :doc:`the metrics plotting tool </metrics_plotting>` (3).
 The resulting plots can aggregate metric information across
 an arbitrary number of runs, which can be useful for spotting outlier samples
-and/or runs, and for monitoring long-terms trends in the sequencing
+and/or runs, and for monitoring long-term trends in the sequencing
 and primary analysis outputs.
 
 :doc:`The variant summarization tool </variant_summary_creation>` (5)
@@ -45,8 +45,8 @@ splice variant information, but only for variants that are deemed reportable
 by the LocalApp software (notably, the somatic/non-somatic status of the various
 genomic events might need to be re-evaluated after the post-processing).
 
-The core TSOPPI functionality, post-processing of individual samples/
-matched tumor-normal sample pairs, is offered via the
+The core TSOPPI functionality, post-processing of individual samples/matched
+tumor-normal sample pairs, is made available via the
 :doc:`RNA sample post-processing </RNA_sample_postprocessing>` (6)
 and :doc:`DNA sample post-processing </DNA_sample_postprocessing>` (7) tools.
 These tools produce sample-wise QC plots, annotate and prioritize called small variants
