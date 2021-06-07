@@ -2,7 +2,7 @@ Change log
 ==========
 
 21-06-07
- - fixing broken IGV port commands links.
+ - fixing broken IGV port command links.
 
 21-06-02
  - harmonization of parameter nomenclature across all TSOPPI tools
