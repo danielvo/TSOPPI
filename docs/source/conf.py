@@ -18,11 +18,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'TSOPPI: TSO500 Post-Processing for InPreD'
-copyright = '2021, Daniel Vodak'
+copyright = '2022, Daniel Vodak'
 author = 'Daniel Vodak'
 
 # The full version, including alpha/beta/rc tags
-release = '21-04'
+release = 'v0.3.0:22-02-28'
 
 
 # -- General configuration ---------------------------------------------------

@@ -4,15 +4,15 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Metrics plotting tool &#8212; TSOPPI: TSO500 Post-Processing for InPreD 21-04 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Metrics plotting tool &#8212; TSOPPI: TSO500 Post-Processing for InPreD v0.3.0:22-02-28 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Variant summary creation tool" href="variant_summary_creation.html" />
@@ -33,23 +33,23 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="metrics-plotting-tool">
+  <section id="metrics-plotting-tool">
 <h1><strong>Metrics plotting</strong> tool<a class="headerlink" href="#metrics-plotting-tool" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="about">
+<section id="about">
 <h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
 <p>The LocalApp software calculates a wide variety of metrics during its analysis
 runs, and when the primary analysis for a given run is finished,
 all the metrics are collected and saved into the <em>MetricsOutput.tsv</em> file
 in the Results sub-directory at the output destination.
-Similarly, Illumina sequencers generate
+Similarly, some Illumina sequencers generate
 a <em>RunCompletionStatus.xml</em> file with selected sequencing metrics
 in their output directory for a given sequencing run.</p>
 <p>The “process_metrics_files” TSOPPI tool offers visualization of LocalApp-
 and sequencer-generated metrics for sets of samples across multiple sequencing/analysis runs.
 The plots can be useful for identifying sample/run outliers, and for monitoring
 long-terms trends in the sequencing and primary analysis outputs.</p>
-</div>
-<div class="section" id="input-files">
+</section>
+<section id="input-files">
 <h2>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><strong>[LocalApp_output_directory]/Results/MetricsOutput.tsv</strong> files for n&gt;=1 runs
@@ -57,8 +57,8 @@ long-terms trends in the sequencing and primary analysis outputs.</p>
 <li><p><strong>[sequencer_output_directory]/RunCompletionStatus.xml</strong> files for n&gt;=1 runs
 (these are specified with the <em>--run_completion_status_file</em> parameter).</p></li>
 </ul>
-</div>
-<div class="section" id="running-the-tool">
+</section>
+<section id="running-the-tool">
 <h2>Running the tool<a class="headerlink" href="#running-the-tool" title="Permalink to this headline">¶</a></h2>
 <p>Command line options:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>usage: process_metrics_files.py [-h] [-v] -m METRICS_FILE -r
@@ -98,7 +98,7 @@ optional arguments:
                      mounting directory path/prefix will be replaced by the
                      container mounting directory path in all input and
                      output file paths (this parameter likely shouldn`t be
-                     changed)
+                     changed); default value: /inpred/data
  -i HIGHLIGHTED_RUN_LABEL, --highlighted_run_label HIGHLIGHTED_RUN_LABEL
                      label of the run which should be highlighted in the
                      output plots (if not supplied, the last supplied label
@@ -111,7 +111,7 @@ optional arguments:
     -it \
     -v /hs_prefix_path:/inpred/data \
     inpred/tsoppi_main:v0.1 \
-      python /inpred/user_scripts/process_metrics_files.py \
+      bash /inpred/user_scripts/process_metrics_files.sh \
         --metrics_file /hs_prefix_path/analysis/run1/Results/MetricsOutput.tsv \
         --metrics_file /hs_prefix_path/analysis/run2/Results/MetricsOutput.tsv \
         --metrics_file /hs_prefix_path/analysis/run3/Results/MetricsOutput.tsv \
@@ -125,17 +125,18 @@ optional arguments:
         --host_system_mounting_directory /hs_prefix_path
 </pre></div>
 </div>
-</div>
-<div class="section" id="output-files">
+</section>
+<section id="output-files">
 <h2>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><strong>[tool_output_directory]/TSO500_run_metrics.pdf</strong>: the main output file, with metric-wise plots;</p></li>
 <li><p><strong>[tool_output_directory]/intermediate_metrics_files/joint_sequencing_QC_file.tsv</strong>: aggregated sequencing-run metrics for all input <em>RunCompletionStatus.xml</em> files;</p></li>
 <li><p><strong>[tool_output_directory]/intermediate_metrics_files/master_metrics_table.tsv</strong>: aggregated analysis-run metrics for all input <em>MetricsOutput.tsv</em> files;</p></li>
-<li><p><strong>[tool_output_directory]/intermediate_metrics_files/[run_label_N]_metrics.tsv</strong>: parsed and transposed analysis-run metrics table for Nth input <em>MetricsOutput.tsv</em> file (the corresponding <em>run_label</em> values is used in the file name).</p></li>
+<li><p><strong>[tool_output_directory]/intermediate_metrics_files/[run_label_N]_metrics.tsv</strong>: parsed and transposed analysis-run metrics table for Nth input <em>MetricsOutput.tsv</em> file (the corresponding <em>run_label</em> value is used in the file name).</p></li>
 </ul>
-</div>
-</div>
+<p>(last updated: 2022-03-03)</p>
+</section>
+</section>
 
 
           </div>
@@ -154,7 +155,7 @@ optional arguments:
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Table of contents:</span></p>
+<p><span class="caption-text">Table of contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>Metrics plotting</strong> tool</a><ul>
@@ -166,10 +167,11 @@ optional arguments:
 </li>
 <li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_data_postprocessing.html"><strong>Sample data post-processing</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="DNA_sample_postprocessing.html"><strong>DNA sample post-processing</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="RNA_sample_postprocessing.html"><strong>RNA sample post-processing</strong> tool</a></li>
-<li class="toctree-l1"><a class="reference internal" href="RNA_sample_postprocessing.html#additional-notes">Additional notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="software_versions.html">Software versions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
 </ul>
@@ -206,10 +208,10 @@ optional arguments:
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2021, Daniel Vodak.
+      &copy;2022, Daniel Vodak.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -40,7 +40,9 @@ Change log
 
 - changed:
 
-  - metrics plotting now has to be invoked via a bash script ("process_metrics_files.sh");
+  - :doc:`the metrics plotting tool </metrics_plotting>` now has to be invoked via a wrapper bash script
+    ("process_metrics_files.sh") that first activates the necessary Conda environment
+    (the parameter setup has not been changed however);
   - WARNING messages are now being output to STDERR logs;
   - multiple changes to the CNV summary output tables:
 
@@ -151,3 +153,5 @@ Change log
 
 21-04-14
  - initial version.
+
+(last updated: 2022-03-03)

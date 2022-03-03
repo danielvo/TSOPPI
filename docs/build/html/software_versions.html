@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>Frequently asked questions &#8212; TSOPPI: TSO500 Post-Processing for InPreD v0.3.0:22-02-28 documentation</title>
+    <title>Software versions &#8212; TSOPPI: TSO500 Post-Processing for InPreD v0.3.0:22-02-28 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -15,8 +15,8 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Change log" href="changelog.html" />
-    <link rel="prev" title="Software versions" href="software_versions.html" />
+    <link rel="next" title="Frequently asked questions" href="FAQ.html" />
+    <link rel="prev" title="InPreD sample ID nomenclature" href="inpred_nomenclature.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,9 +33,40 @@
 
           <div class="body" role="main">
             
-  <section id="frequently-asked-questions">
-<h1>Frequently asked questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
-<p>None yet!</p>
+  <section id="software-versions">
+<h1>Software versions<a class="headerlink" href="#software-versions" title="Permalink to this headline">¶</a></h1>
+<p>The TSOPPI v0.3 container is based on continuumio/miniconda3 docker image version 4.10.3p1.
+PCGR/CPSR v1.0.0 is installed on top in the recommended setup,
+contributing two Conda environments with the following programs directly called by TSOPPI:</p>
+<ul class="simple">
+<li><p><em>pcgr</em> environment:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/sigven/pcgr">PCGR</a> and <a class="reference external" href="https://github.com/sigven/cpsr">CPSR</a> v1.0.0: small variant annotation (somatic variant
+evaluation and assessment of potential cancer predisposition changes);</p></li>
+<li><p><a class="reference external" href="https://www.python.org">Python v3.7.12</a>: execution of internal TSOPPI Python scripts;</p></li>
+<li><p><a class="reference external" href="http://www.htslib.org">samtools v1.10</a> (using htslib v1.10.2): extraction of small variants’ genomic
+contexts for the purposes of mutational signature plotting (tool <em>faidx</em>);</p></li>
+<li><p><a class="reference external" href="https://bedtools.readthedocs.io/en/latest/index.html">bedtools v2.30.0</a>: DNA sample coverage- and whitelist-related analyses
+(tool <em>intersectBed</em>).</p></li>
+</ul>
+</li>
+<li><p><em>pcgrr</em> environment:</p>
+<ul>
+<li><p><a class="reference external" href="https://www.r-project.org">R/Rscript version v4.1.2</a>: execution of internal TSOPPI R-scripts
+- all of plotting;</p></li>
+<li><p><a class="reference external" href="https://www.python.org">Python v3.10.2</a>: execution of internal TSOPPI Python scripts.</p></li>
+</ul>
+</li>
+</ul>
+<p>An additional Conda environment (<em>bcftools_env</em>) is present in the TSOPPI image
+in order to provide access to:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://www.htslib.org">bcftools v1.9</a> (using htslib v1.9): assessment of small variant
+support within RNA samples (tools <em>mpileup</em> and <em>norm</em>).</p></li>
+</ul>
+<p>Static <a class="reference external" href="https://www.oracle.com/java/">Java (jdk-11.0.6)</a> and <a class="reference external" href="https://broadinstitute.github.io/picard/">Picard tools (v2.26.2)</a> packages are utilized for the
+(optional) assessment of sequencing artifact metrics
+(tools <em>AddOrReplaceReadGroups</em> and <em>CollectSequencingArtifactMetrics</em>).</p>
 <p>(last updated: 2022-03-03)</p>
 </section>
 
@@ -66,8 +97,8 @@
 <li class="toctree-l1"><a class="reference internal" href="DNA_sample_postprocessing.html"><strong>DNA sample post-processing</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="RNA_sample_postprocessing.html"><strong>RNA sample post-processing</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="software_versions.html">Software versions</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently asked questions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Software versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
 </ul>
 
@@ -75,8 +106,8 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="software_versions.html" title="previous chapter">Software versions</a></li>
-      <li>Next: <a href="changelog.html" title="next chapter">Change log</a></li>
+      <li>Previous: <a href="inpred_nomenclature.html" title="previous chapter">InPreD sample ID nomenclature</a></li>
+      <li>Next: <a href="FAQ.html" title="next chapter">Frequently asked questions</a></li>
   </ul></li>
 </ul>
 </div>
@@ -110,7 +141,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/FAQ.rst.txt"
+      <a href="_sources/software_versions.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

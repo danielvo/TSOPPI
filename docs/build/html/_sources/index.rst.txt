@@ -13,9 +13,9 @@ Please refer to the documentation pages of individual tools for details regardin
    metrics_plotting
    variant_summary_creation
    variant_recurrence_table_creation
-   DNA_sample_postprocessing
-   RNA_sample_postprocessing
+   sample_data_postprocessing
    inpred_nomenclature
+   software_versions
    FAQ
    changelog
 
@@ -27,3 +27,5 @@ Indices and tables
 
 .. * :ref:`genindex`
 .. * :ref:`modindex`
+
+(last updated: 2022-03-03)

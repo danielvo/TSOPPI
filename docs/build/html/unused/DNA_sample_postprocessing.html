@@ -7,18 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
     <title>DNA sample post-processing tool &#8212; TSOPPI: TSO500 Post-Processing for InPreD v0.3.0:22-02-28 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="RNA sample post-processing tool" href="RNA_sample_postprocessing.html" />
-    <link rel="prev" title="Sample data post-processing tool" href="sample_data_postprocessing.html" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -94,20 +92,20 @@ is set to “True”, normal sample input will be expected (please refer to the
 command line options below for the complete list of optional and required
 parameters related to the normal sample).</p></li>
 <li><p>If all input sample IDs were created according to the
-<a class="reference internal" href="inpred_nomenclature.html"><span class="doc">InPreD sample ID nomenclature</span></a>, it is possible
+<a class="reference internal" href="../inpred_nomenclature.html"><span class="doc">InPreD sample ID nomenclature</span></a>, it is possible
 to take advantage of information coded within them.
 Currently, the nomenclature rules are only used to determine and display
 the sample type in the tool’s output metric plots, but the functionality will
 likely be expanded in the future. (Please see the option
 <em>--inpred_nomenclature</em> below.)</p></li>
-<li><p>The <a class="reference internal" href="inpred_nomenclature.html"><span class="doc">InPreD nomenclature document</span></a>
+<li><p>The <a class="reference internal" href="../inpred_nomenclature.html"><span class="doc">InPreD nomenclature document</span></a>
 (or the original <a class="reference external" href="https://github.com/sigven/pcgr">PCGR documentations</a>) can
 also be used for selecting the correct value of the <em>--tumor_site</em> parameter
 for samples not following the InPreD ID nomenclature.
 Leaving this parameter with its default value (0) will have an impact on
 variants’ annotation results (specifically, their ACMG/AMP Tier ranking).</p></li>
 <li><p>Taking advantage of the
-<a class="reference internal" href="variant_recurrence_table_creation.html"><span class="doc">variant recurrence table tool</span></a>
+<a class="reference internal" href="../variant_recurrence_table_creation.html"><span class="doc">variant recurrence table tool</span></a>
 and using its output with this tool is strongly recommended (please see the
 option <em>--variant_recurrence_table</em> below).</p></li>
 </ul>
@@ -272,7 +270,7 @@ plot in PNG format (per input sample);</p></li>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">TSOPPI: TSO500 Post-Processing for InPreD</a></h1>
+<h1 class="logo"><a href="../index.html">TSOPPI: TSO500 Post-Processing for InPreD</a></h1>
 
 
 
@@ -283,39 +281,29 @@ plot in PNG format (per input sample);</p></li>
 
 <h3>Navigation</h3>
 <p><span class="caption-text">Table of contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="metrics_plotting.html"><strong>Metrics plotting</strong> tool</a></li>
-<li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
-<li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sample_data_postprocessing.html"><strong>Sample data post-processing</strong> tool</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>DNA sample post-processing</strong> tool</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#input-files">Input files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#running-the-tool">Running the tool</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="RNA_sample_postprocessing.html"><strong>RNA sample post-processing</strong> tool</a></li>
-<li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="software_versions.html">Software versions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metrics_plotting.html"><strong>Metrics plotting</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sample_data_postprocessing.html"><strong>Sample data post-processing</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../software_versions.html">Software versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQ.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change log</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="sample_data_postprocessing.html" title="previous chapter"><strong>Sample data post-processing</strong> tool</a></li>
-      <li>Next: <a href="RNA_sample_postprocessing.html" title="next chapter"><strong>RNA sample post-processing</strong> tool</a></li>
+  <li><a href="../index.html">Documentation overview</a><ul>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
+    <form class="search" action="../search.html" method="get">
       <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
@@ -342,7 +330,7 @@ plot in PNG format (per input sample);</p></li>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/DNA_sample_postprocessing.rst.txt"
+      <a href="../_sources/unused/DNA_sample_postprocessing.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

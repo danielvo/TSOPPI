@@ -4,18 +4,18 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Variant recurrence table creation tool &#8212; TSOPPI: TSO500 Post-Processing for InPreD 21-04 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Variant recurrence table creation tool &#8212; TSOPPI: TSO500 Post-Processing for InPreD v0.3.0:22-02-28 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="DNA sample post-processing tool" href="DNA_sample_postprocessing.html" />
+    <link rel="next" title="Sample data post-processing tool" href="sample_data_postprocessing.html" />
     <link rel="prev" title="Variant summary creation tool" href="variant_summary_creation.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -33,47 +33,55 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="variant-recurrence-table-creation-tool">
+  <section id="variant-recurrence-table-creation-tool">
 <h1><strong>Variant recurrence table creation</strong> tool<a class="headerlink" href="#variant-recurrence-table-creation-tool" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="about">
+<section id="about">
 <h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
-<p>Small variant quality control and interpretation is the most demanding part
-of TSO500 results evaluation. Matched control samples make this work considerably
-easier by greatly reducing the uncertainty of origin (germline/somatic/artifact)
+<p>Small variant (SNV/short INDEL) quality control and interpretation is the most demanding part
+of TSO500 results evaluation. Availability of matched control samples makes
+this work considerably easier by greatly reducing the uncertainty of origin
+(germline/somatic/artifact)
 of individual variants found in the tumor sample. In the absence of matched control
 samples, simple information about a variant’s recurrence in previously sequenced
-samples can go a long way in a variant’s origin assessment.</p>
+samples can go a long way in assessing a variant’s origin.</p>
 <p>TSOPPI’s “update_variant_recurrence_table” tool is meant to answer two types
-of questions:</p>
+of questions with regard to relevant (tumor and/or normal) samples investigated
+so far in the InPreD project:</p>
 <ul class="simple">
-<li><p>In how many of the specified samples are the individual genomic positions
-usable for small variant calling (i.e., assessing the callability)?</p></li>
-<li><p>How often do the individual small variants appear in the specified tumor
-and normal samples (at predefined variant allelic fraction tiers)?</p></li>
+<li><p>How often is a given variant position usable for small variant calling? For
+various reasons, variant calling might be difficult/impossible at certain loci.</p></li>
+<li><p>How often does given small variant appear in tumor and/or normal InPreD samples?
+The observed variant recurrence is broken down to several predefined variant
+allelic fraction (VAF) tiers, which make it easier to judge a variant’s typical origin.</p></li>
 </ul>
-<p>Information stored in the resulting table can be attached to individual
-small variant calls during sample post-processing by the
-<a class="reference internal" href="DNA_sample_postprocessing.html"><span class="doc">process DNA sample</span></a> TSOPPI tool.</p>
-<div class="section" id="additional-notes">
+<p>The tool processes an arbitrary number of LocalApp-generated small variant VCF files
+and outputs a table with recurrence information entry for each variant observed
+in at least one sample (provided that the variant site was callable,
+but regardless of how the variant has been classified).
+The individual information entries can then be attached to the corresponding
+variants’ output whenever these are encountered during sample post-processing
+(please refer to the <a class="reference internal" href="sample_data_postprocessing.html"><span class="doc">sample data post-processing</span></a>
+TSOPPI tool for details regarding its usage).</p>
+<section id="additional-notes">
 <h3>Additional notes<a class="headerlink" href="#additional-notes" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>The current default read-depth callability threshold is set to 20.</p></li>
+<li><p>The default read-depth callability threshold is set to 20.</p></li>
 <li><p>Compared to single-nucleotide variants (SNVs), long insertions require their
-supporting reads to cover a larger region. This makes long insertions more
-difficult to call: an SNV and an insertion located at the same genomic position
-might therefore have different callability within the same sample. However,
-the callability values recorded in the variant recurrence tables produced by
-this tool are position-specific (not variant-specific): If an input VCF includes
-at least one record that would make a given position callable, the position will be
-considered callable for all variants in the corresponding sample.</p></li>
-<li><p>We recommend not using more than one tumor sample and one normal sample for any given
-individual as input for this tool. The resulting recurrence information is
+supporting reads to cover a larger region base pair-wise - an SNV and an
+insertion located at the same genomic position might therefore have different
+callability within the same sample. However, the callability values recorded
+in the variant recurrence tables produced by this tool are position-specific
+(not variant-specific): If an input VCF includes at least one record that would
+make a given position callable, the position will be considered callable for
+all variants in the corresponding sample.</p></li>
+<li><p>We recommend not using more than one tumor sample and one normal sample for any
+given individual as input for this tool. The resulting recurrence information is
 most useful if it is clear how many different individuals (rather than samples)
-so far had given variant.</p></li>
+so far contained given variant.</p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="input-files">
+</section>
+</section>
+<section id="input-files">
 <h2>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h2>
 <p>A single input file is required: A two-field table specifying the VCF
 files that should be used for variant recurrence table construction.
@@ -103,24 +111,26 @@ and 2 normal sample VCF files (additional comment-lines are also present):</p>
 <span class="c1">#/hs_prefix_path/analysis/run1/Results/pair_C/normal_C/normal_C_MergedSmallVariants.genome.vcf</span>
 </pre></div>
 </div>
-<div class="section" id="id1">
-<h3>Additional notes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<section id="usage-notes">
+<h3>Usage notes<a class="headerlink" href="#usage-notes" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>If the variant recurrence table specified with parameter <em>--variant_recurrence_table</em> already exists, instead of creating
-it from scratch, the tool will try to simply update it with variant information
-from VCF files that are listed in the input VCF file table but absent in the
-header section of the already existing variant recurrence table (i.e., VCF files
-listed in both files will be ignored during the update, and information from novel
-VCF files will be merged with information from the pre-existing variant recurrence
-table; in this case, the variant recurrence table will be rewritten with the merged information).</p></li>
-<li><p>For the purposes of variant recurrence table construction, please use files with path
+<li><p>Header of the resulting variant recurrence table (VRT) keeps track of which VCF files
+have been used during its construction (by storing the VCF file paths).
+If the VRT output file specified with parameter
+<em>--variant_recurrence_table</em> already exists, instead of simple replacement,
+the tool will aim to update the VRT with variant information
+from VCF files that aren’t yet listed in the VRT header (i.e., VCF files
+already listed in the VRT header will be ignored during the update, while
+information from novel VCF files will be merged with pre-existing VRT
+variant entries).</p></li>
+<li><p>For the purposes of VRT construction, please use VCF files with path
 <strong>[LocalApp_run_output]/Results/[Pair_ID]/[sample_ID]/[sample_ID]_MergedSmallVariants.genome.vcf</strong>.</p></li>
 </ul>
 <p>Please consult the <a class="reference internal" href="#output-files-label"><span class="std std-ref">Output files</span></a> section for specification of the
-variant recurrence table format.</p>
-</div>
-</div>
-<div class="section" id="running-the-tool">
+VRT format.</p>
+</section>
+</section>
+<section id="running-the-tool">
 <h2>Running the tool<a class="headerlink" href="#running-the-tool" title="Permalink to this headline">¶</a></h2>
 <p>Command line options:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>usage: update_variant_recurrence_table.py [-h] [-v] -i VCF_FILE_TABLE -o
@@ -155,14 +165,15 @@ optional arguments:
                         mounting directory path/prefix will be replaced by the
                         container mounting directory path in all input and
                         output file paths (this parameter likely shouldn`t be
-                        changed)
+                        changed); default value: /inpred/data
   -m MINIMUM_DEPTH, --minimum_depth MINIMUM_DEPTH
                         minimum allowed read depth at the variant site; when
                         processing a given sample VCF, variants at genomic
                         sites with read coverage below this threshold will be
                         disregarded during the variant recurrence table
                         creation (the variant site might still have high-
-                        enough coverage in other samples though)
+                        enough coverage in other samples though);
+                        default value: 20
 </pre></div>
 </div>
 <p>Example invocation using the Docker image:</p>
@@ -177,32 +188,36 @@ optional arguments:
         --host_system_mounting_directory /hs_prefix_path
 </pre></div>
 </div>
-</div>
-<div class="section" id="output-files">
+</section>
+<section id="output-files">
 <span id="output-files-label"></span><h2>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
 <p>A single output file is generated by this tool. Its header includes three types of
 lines:</p>
 <ul class="simple">
 <li><p>lines with string “#[sample_vcf]” in the first field specify which samples
 have been used during the table construction (this information can be utilized
-during a table update);</p></li>
+during an update);</p></li>
 <li><p>lines with a leading “#” symbol, but without the “#[sample_vcf]” value in the first field,
 describe the format of the variant data lines in the table;</p></li>
 <li><p>a line providing variant data field names:
 “variant_id”, “tumor_recurrence_summary”, “normal_recurrence_summary”, “total_recurrence_summary”.</p></li>
 </ul>
-<p>The summary strings values within the variant data lines have format “X:A+B+C+D=M/N”, where:</p>
+<p>The “variant_id” field values are in format “chromosome:position:ref_allale&gt;alt_allele”,
+with positions being 1-based.</p>
+<p>The summary string values within the variant data lines have format “X:A+B+C+D=M/N”, where:</p>
 <ul class="simple">
-<li><p><strong>X</strong> is the sample type, one of “T” = tumor, “N” = normal, “A” = any;</p></li>
+<li><p><strong>X</strong> is the sample type, one of “T” = tumor, “N” = normal, “A” = any (the latter encompassing both tumor and normal samples);</p></li>
 <li><p><strong>A</strong> is the number of samples of type X in which given variant was seen with VAF &lt; 0.01;</p></li>
 <li><p><strong>B</strong> is the number of samples of type X in which given variant was seen with 0.01 &lt;= VAF &lt; 0.05;</p></li>
 <li><p><strong>C</strong> is the number of samples of type X in which given variant was seen with 0.05 &lt;= VAF &lt; 0.35;</p></li>
 <li><p><strong>D</strong> is the number of samples of type X in which given variant was seen with 0.35 &lt;= VAF;</p></li>
 <li><p><strong>M</strong> is the number of samples of type X in which given variant was seen with any VAF;</p></li>
-<li><p><strong>N</strong> is the number of investigated samples of type X in which given variant was callable (i.e., the variant site had coverage &gt;= 20).</p></li>
+<li><p><strong>N</strong> is the number of investigated samples of type X in which the given variant’s site was callable (i.e., the variant site had coverage &gt;= 20).</p></li>
 </ul>
-</div>
-</div>
+<p>Values <strong>A</strong>, <strong>B</strong>, <strong>C</strong>, <strong>D</strong> and <strong>M</strong> also relate to callable samples only.</p>
+<p>(last updated: 2022-03-03)</p>
+</section>
+</section>
 
 
           </div>
@@ -221,7 +236,7 @@ describe the format of the variant data lines in the table;</p></li>
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Table of contents:</span></p>
+<p><span class="caption-text">Table of contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metrics_plotting.html"><strong>Metrics plotting</strong> tool</a></li>
@@ -233,9 +248,11 @@ describe the format of the variant data lines in the table;</p></li>
 <li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="sample_data_postprocessing.html"><strong>Sample data post-processing</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="DNA_sample_postprocessing.html"><strong>DNA sample post-processing</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="RNA_sample_postprocessing.html"><strong>RNA sample post-processing</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="software_versions.html">Software versions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
 </ul>
@@ -245,7 +262,7 @@ describe the format of the variant data lines in the table;</p></li>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="variant_summary_creation.html" title="previous chapter"><strong>Variant summary creation</strong> tool</a></li>
-      <li>Next: <a href="DNA_sample_postprocessing.html" title="next chapter"><strong>DNA sample post-processing</strong> tool</a></li>
+      <li>Next: <a href="sample_data_postprocessing.html" title="next chapter"><strong>Sample data post-processing</strong> tool</a></li>
   </ul></li>
 </ul>
 </div>
@@ -272,10 +289,10 @@ describe the format of the variant data lines in the table;</p></li>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2021, Daniel Vodak.
+      &copy;2022, Daniel Vodak.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -7,7 +7,7 @@ The LocalApp software calculates a wide variety of metrics during its analysis
 runs, and when the primary analysis for a given run is finished,
 all the metrics are collected and saved into the *MetricsOutput.tsv* file
 in the Results sub-directory at the output destination.
-Similarly, Illumina sequencers generate
+Similarly, some Illumina sequencers generate
 a *RunCompletionStatus.xml* file with selected sequencing metrics
 in their output directory for a given sequencing run.
 
@@ -67,7 +67,7 @@ Command line options:
                         mounting directory path/prefix will be replaced by the
                         container mounting directory path in all input and
                         output file paths (this parameter likely shouldn`t be
-                        changed)
+                        changed); default value: /inpred/data
     -i HIGHLIGHTED_RUN_LABEL, --highlighted_run_label HIGHLIGHTED_RUN_LABEL
                         label of the run which should be highlighted in the
                         output plots (if not supplied, the last supplied label
@@ -82,7 +82,7 @@ Example invocation using the Docker image:
       -it \
       -v /hs_prefix_path:/inpred/data \
       inpred/tsoppi_main:v0.1 \
-        python /inpred/user_scripts/process_metrics_files.py \
+        bash /inpred/user_scripts/process_metrics_files.sh \
           --metrics_file /hs_prefix_path/analysis/run1/Results/MetricsOutput.tsv \
           --metrics_file /hs_prefix_path/analysis/run2/Results/MetricsOutput.tsv \
           --metrics_file /hs_prefix_path/analysis/run3/Results/MetricsOutput.tsv \
@@ -100,4 +100,6 @@ Output files
 - **[tool_output_directory]/TSO500_run_metrics.pdf**: the main output file, with metric-wise plots;
 - **[tool_output_directory]/intermediate_metrics_files/joint_sequencing_QC_file.tsv**: aggregated sequencing-run metrics for all input *RunCompletionStatus.xml* files;
 - **[tool_output_directory]/intermediate_metrics_files/master_metrics_table.tsv**: aggregated analysis-run metrics for all input *MetricsOutput.tsv* files;
-- **[tool_output_directory]/intermediate_metrics_files/[run_label_N]_metrics.tsv**: parsed and transposed analysis-run metrics table for Nth input *MetricsOutput.tsv* file (the corresponding *run_label* values is used in the file name).
+- **[tool_output_directory]/intermediate_metrics_files/[run_label_N]_metrics.tsv**: parsed and transposed analysis-run metrics table for Nth input *MetricsOutput.tsv* file (the corresponding *run_label* value is used in the file name).
+
+(last updated: 2022-03-03)

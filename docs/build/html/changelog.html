@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
 
-    <title>Change log &#8212; TSOPPI: TSO500 Post-Processing for InPreD 21-04 documentation</title>
+    <title>Change log &#8212; TSOPPI: TSO500 Post-Processing for InPreD v0.3.0:22-02-28 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -77,7 +77,9 @@ which was inconsistent with the PCGR annotation).</p></li>
 </li>
 <li><p>changed:</p>
 <ul>
-<li><p>metrics plotting now has to be invoked via a bash script (“process_metrics_files.sh”);</p></li>
+<li><p><a class="reference internal" href="metrics_plotting.html"><span class="doc">the metrics plotting tool</span></a> now has to be invoked via a wrapper bash script
+(“process_metrics_files.sh”) that first activates the necessary Conda environment
+(the parameter setup has not been changed however);</p></li>
 <li><p>WARNING messages are now being output to STDERR logs;</p></li>
 <li><p>multiple changes to the CNV summary output tables:</p>
 <ul>
@@ -209,6 +211,7 @@ now show the number of callable samples for given variant position.</p></li>
 </ul>
 </dd>
 </dl>
+<p>(last updated: 2022-03-03)</p>
 </section>
 
 
@@ -234,9 +237,11 @@ now show the number of callable samples for given variant position.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="metrics_plotting.html"><strong>Metrics plotting</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_data_postprocessing.html"><strong>Sample data post-processing</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="DNA_sample_postprocessing.html"><strong>DNA sample post-processing</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="RNA_sample_postprocessing.html"><strong>RNA sample post-processing</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="software_versions.html">Software versions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Change log</a></li>
 </ul>
@@ -272,7 +277,7 @@ now show the number of callable samples for given variant position.</p></li>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2021, Daniel Vodak.
+      &copy;2022, Daniel Vodak.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
