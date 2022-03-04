@@ -35,8 +35,121 @@
             
   <section id="sample-data-post-processing-tool">
 <h1><strong>Sample data post-processing</strong> tool<a class="headerlink" href="#sample-data-post-processing-tool" title="Permalink to this headline">¶</a></h1>
-<p><em>Under construction..</em></p>
+<p><strong>Under construction..</strong></p>
+<section id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>Separate analysis pipelines are run by the LocalApp software for DNA and RNA samples,
+generating:</p>
+<ul class="simple">
+<li><p>quality control (QC) metrics for both sample types;</p></li>
+<li><p>fusion and splice variant output for RNA samples;</p></li>
+<li><p>small variant output (SNVs and INDELs up to about 25 bp in size), copy number variant
+output (<em>CNV</em>) and microsatellite status (MS status) information for DNA samples.</p></li>
+</ul>
+<p>However, LocalApp analyzes all samples independently, and no difference is made
+between tumor and normal DNA samples.
+The aims of the “process_patient_samples” TSOPPI tool are to:</p>
+<ul class="simple">
+<li><p>integrate data generated for matched samples of a given patient
+(tumor DNA and/or normal DNA and/or tumor RNA);</p></li>
+<li><p>aggregate information spread over multiple LocalApp output files, include
+information from external resources and tie together data available for the
+different variant types;</p></li>
+<li><p>normalize and visualize CNV-related data;</p></li>
+<li><p>annotate and prioritize small variants called by the LocalApp;</p></li>
+<li><p>assist with sample QC, as well as variant QC and interpretation.</p></li>
+</ul>
+</section>
+<section id="functionality-overview">
+<h2>Functionality overview<a class="headerlink" href="#functionality-overview" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/process_patient_samples_tool_overview.png" src="_images/process_patient_samples_tool_overview.png" />
+<p>The tool’s functionality is broken down into multiple blocks, which are
+enabled/disabled based on the parameter settings and the combination of available
+patient samples (any combination of tumor DNA, normal DNA and tumor RNA samples
+is allowed on input):</p>
+<section id="meta-information-sample-wise-metrics">
+<h3>1. Meta-information &amp; sample-wise metrics<a class="headerlink" href="#meta-information-sample-wise-metrics" title="Permalink to this headline">¶</a></h3>
+<p><strong>Enabled by default, triggered by all sample types.</strong></p>
+<p><strong>Functionality:</strong> Creation of quality metrics plots for each input sample
+(these are intended for providing a quick sample-level QC overview and suitable
+for tumor board meeting presentations). Providing basic information about the
+samples included in the tool’s run.</p>
+<p><strong>Input files:</strong></p>
+<ul class="simple">
+<li><p>Each input sample’s related “[LocalApp_output_directory]/Results/MetricsOutput.tsv”
+file (located automatically, i.e., derived from the <em>LocalApp_output_directory</em>
+paths supplied via options “–dna_tumor_localapp_run_directory”,
+“–normal_localapp_run_directory” and “–rna_tumor_localapp_run_directory”).</p></li>
+</ul>
+<p><strong>Output files:</strong></p>
+<ul class="simple">
+<li><p>“[Sample_ID]_sample_QC_plot.png” file per input sample;</p></li>
+<li><p>“[Sample_ID]_sample_QC_plot.pdf” file per input sample;</p></li>
+<li><p>“sample_list.tsv” file with gathered sample-wise meta-information.</p></li>
+</ul>
+</section>
+<section id="cnv-aggregation">
+<h3>2. CNV aggregation<a class="headerlink" href="#cnv-aggregation" title="Permalink to this headline">¶</a></h3>
+<p><strong>Enabled by default, triggered by tumor DNA sample, utilizing normal DNA sample
+when available.</strong></p>
+<p><strong>Functionality:</strong> Aggregating CNV information from multiple LocalApp output
+files (per sample). Aggregating tumor DNA and normal DNA CNV data. Deriving gene-level CNV
+values from LocalApp-reported fold change (FC) values. Adjustment of FC and CNV
+values based on the tumor content estimate provided for the tumor DNA sample.
+Deriving of genome-wide coordinates for all reported chromosome-based location
+coordinates.</p>
+<p><strong>Input files:</strong></p>
+<ul class="simple">
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/CnvCaller/[sample_ID]/[sample_ID]_CopyNumberVariants.vcf”
+files for input DNA samples (located automatically);</p></li>
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/CnvCaller/[sample_ID]/[sample_ID]_normalizedBinCount.tsv”
+files for input DNA samples (located automatically);</p></li>
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/CnvCaller/[sample_ID]/[sample_ID]_foldChange.tsv”
+files for input DNA samples (located automatically);</p></li>
+<li><p><em>internal TSOPPI container resource:</em> “/inpred/resources/centromere_data/hg19_chromosome_sizes.tsv”;</p></li>
+<li><p><em>internal TSOPPI container resource:</em> “/inpred/resources/PAR_genes.tsv”.</p></li>
+</ul>
+<p><strong>Output files:</strong></p>
+<ul class="simple">
+<li><p>“[tumor_sample_ID]_merged_CNV_data.tsv” - all of available CNV-related information
+(on sub-gene level) gathered into a single file;</p></li>
+<li><p>“[tumor_sample_ID]_merged_CNV_summary_FC_sorted.tsv” - gene-level CNV
+information summary, sorted by FC values;</p></li>
+<li><p>“[tumor_sample_ID]_merged_CNV_summary_location_sorted.tsv” - gene-level
+CNV information summary, sorted by genome-wide gene start positions.</p></li>
+</ul>
+</section>
+<section id="small-variant-aggregation">
+<h3>3. Small variant aggregation<a class="headerlink" href="#small-variant-aggregation" title="Permalink to this headline">¶</a></h3>
+<p><strong>Enabled by default, triggered by tumor DNA sample, utilizing all available
+samples.</strong></p>
+<p><strong>Functionality:</strong> Aggregating small variant information from multiple LocalApp
+output files (per sample). Aggregating tumor DNA and normal DNA small variant data,
+investigating the support for tumor DNA variants in the tumor RNA sample. Creating
+small variant overview tables and allelic fraction histograms/scatter plots.
+Calculating tumor DNA/normal DNA and tumor DNA/tumor RNA sample concordance
+based on known germline variant support. Creating PCGR-/CPRS-ready VCF files.
+Creating a mutational signature plot (plotting variant counts for all possible
+substitution types and their and 3-bp genomic contexts;
+not a mutational signature decomposition analysis).</p>
+<p><strong>Input files:</strong></p>
+<ul class="simple">
+<li><p>X;</p></li>
+<li><p>.</p></li>
+</ul>
+<p><strong>Output files:</strong></p>
+<ul class="simple">
+<li><p>“[tumor_sample_ID]_small_variant_AF_plots.pdf”</p></li>
+<li><p>“[tumor_sample_ID]_sample_concordance.tsv”</p></li>
+<li><p>“[tumor_sample_ID]_small_variant_overview_by_tier.tsv”</p></li>
+<li><p>“[tumor_sample_ID]_small_variant_overview_by_type.tsv”</p></li>
+<li><p>“[tumor_sample_ID]_small_variants_all.vcf”</p></li>
+<li><p>“[tumor_sample_ID]_small_variants_somatic.vcf”</p></li>
+<li><p>“[tumor_sample_ID]_joint_mutational_signature.pdf”</p></li>
+</ul>
 <p>(last updated: 2022-03-03)</p>
+</section>
+</section>
 </section>
 
 
@@ -62,7 +175,11 @@
 <li class="toctree-l1"><a class="reference internal" href="metrics_plotting.html"><strong>Metrics plotting</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>Sample data post-processing</strong> tool</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>Sample data post-processing</strong> tool</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functionality-overview">Functionality overview</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="software_versions.html">Software versions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>

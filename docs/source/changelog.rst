@@ -24,10 +24,10 @@ Change log
   - jdk-11.0.6 and picard_2.26.2 (namely its tools \"AddOrReplaceReadGroups\" and \"CollectSequencingArtifactMetrics\")
     can now be utilized in order to calculate sequencing artifact metrics for the tumor DNA sample
     (option \"--enable_CSAM_check True/False\");
-  - patient gender is now taken into account in CNV processing and plotting:
+  - patient sex is now taken into account in CNV processing and plotting:
 
     - chrX non-PAR genes are assumed to have 1 copy in copy number neutral male patients;
-    - LocalApp-assumed patient gender (derived from tumor DNA sample data) is now being mentioned in more output files;
+    - LocalApp-assumed patient sex (derived from tumor DNA sample data) is now being mentioned in more output files;
   - PCGR's mutational signature analysis is being automatically run for samples with >=100 assumed somatic SNVs;
   - on-screen logs of the main sample-processing TSOPPI shell script (\"process_patient_samples.sh\")
     are now being saved into dedicated files;
@@ -119,7 +119,7 @@ Change log
 
 - caveats:
 
-  - the patient gender, as estimated by the LocalApp, can be wrong.
+  - the patient sex, as estimated by the LocalApp, can be wrong.
 
 
 21-06-07 (TSOPPI version 0.1)
@@ -135,7 +135,7 @@ Change log
  - when applicable, the new InPreD sample ID nomenclature is now reflected
    in all sample-wise QC plots;
  - changing multiple internal parameter values in the
-   :doc:`DNA sample post-processing tool </DNA_sample_postprocessing>`
+   `DNA sample post-processing tool` [deprecated as of v.0.3]
    (these parameters don't affect which variants will be present in the output files,
    they only affect how the output variants will be flagged):
    MIN_TUMOR_DP: 10 -> 50; MIN_TUMOR_VAF: 0.03 -> 0.05; MAX_TUMOR_VAF: 0.98 -> 0.99;

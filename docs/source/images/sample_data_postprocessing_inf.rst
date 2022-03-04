@@ -1,32 +1,36 @@
-**DNA sample post-processing** tool
-===================================
+**Sample data post-processing** tool
+====================================
 
-About
------
-During DNA sample analysis, the LocalApp pipeline generates sample metrics,
-calls small variants (SNVs and INDELs up to about 25 bp in size) and copy number
-variants (*CNV*) and evaluates the sample's microsatellite (in-)stability status
-(*MSI*/MSS).
-(The pipeline also calculates tumor mutational burden [*TMB*] from its called/filtered
-small variant list, but InPreD currently uses a slightly different TMB calculation method.)
+3. Small variant aggregation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Enabled by default, triggered by tumor DNA sample, utilizing all available
+samples.**
 
-TSOPPI's "DNA_sample_postprocessing" tool is meant to post-process LocalApp outputs
-available for individual DNA samples. Currently, the tool:
+**Functionality:** Aggregating small variant information from multiple LocalApp
+output files (per sample). Aggregating tumor DNA and normal DNA small variant data,
+investigating the support for tumor DNA variants in the tumor RNA sample. Creating
+small variant overview tables and allelic fraction histograms/scatter plots.
+Calculating tumor DNA/normal DNA and tumor DNA/tumor RNA sample concordance
+based on known germline variant support. Creating PCGR-/CPRS-ready VCF files.
+Creating a mutational signature plot (plotting variant counts for all possible
+substitution types and their and 3-bp genomic contexts;
+not a mutational signature decomposition analysis).
 
-- creates a summary metric plot usable at molecular tumor board meetings;
-- when available, merges tumor and normal data for given matched sample pair;
-- aggregates information from multiple small variant files into a single table,
-  and explicitly assigns a LocalApp-derived class to each variant;
-- annotates the small variants with `PCGR <https://github.com/sigven/pcgr>`_/`CPSR <https://github.com/sigven/cpsr>`_
-  and uses the collected information in order the prioritize the variants
-  for the subsequent quality-control and interpretation;
-- aggregates information from multiple CNV files into a single table,
-  and adjusts the copy number results based on user-provided tumor content value;
-- creates an HTML file that simplifies small variant browsing in IGV;
-- generates various plots.
+**Input files:**
 
-Please consult the :ref:`DNA_PP_output_files-label` section for details regarding
-output file formats.
+- X;
+- .
+
+**Output files:**
+
+- "[tumor_sample_ID]_small_variant_AF_plots.pdf"
+- "[tumor_sample_ID]_sample_concordance.tsv"
+- "[tumor_sample_ID]_small_variant_overview_by_tier.tsv"
+- "[tumor_sample_ID]_small_variant_overview_by_type.tsv"
+- "[tumor_sample_ID]_small_variants_all.vcf"
+- "[tumor_sample_ID]_small_variants_somatic.vcf"
+- "[tumor_sample_ID]_joint_mutational_signature.pdf"
+
 
 Additional notes
 ^^^^^^^^^^^^^^^^
@@ -233,3 +237,98 @@ Other:
 - **[tool_output_dir]/[output_sample_id]_sample_QC_plot.png**: output metrics
   plot in PNG format (per input sample);
 - additional (intermediate and log) files.
+
+=================================================
+
+About
+-----
+During RNA sample analysis, the LocalApp pipeline generates sample metrics
+and calls fusion and splice variants.
+
+TSOPPI's "RNA_sample_postprocessing" tool is meant to post-process LocalApp outputs
+available for individual RNA samples. Currently, the tool:
+
+- creates a summary metric plot usable at molecular tumor board meetings;
+- extracts fusion variant information from LocalApp-generated output.
+
+(Expression/fusion break-point visualization and small variant support calculation
+are in development, but not yet available.)
+
+Additional notes
+^^^^^^^^^^^^^^^^
+- If all input sample IDs were created according to the
+  :doc:`InPreD sample ID nomenclature </inpred_nomenclature>`, it is possible
+  to take advantage of information coded within them.
+  Currently, the nomenclature rules are only used to determine and display
+  the sample type in the tool's output metric plots, but the functionality will
+  likely be expanded in the future. (Please see the option
+  *\--inpred_nomenclature* below.)
+
+
+Input files
+-----------
+- **[LocalApp_output_directory]/Results/MetricsOutput.tsv** file for the
+  analysis run that included the referenced RNA input sample;
+- **[LocalApp_output_directory]/Logs_Intermediates/RnaFusionFiltering/[sample_ID]/[sample_ID].csv**
+  file for the referenced RNA input sample.
+
+ The location of both files is automatically determined based on the user-supplied
+ value for parameter *\--tumor_localapp_run_directory*.
+
+
+Running the tool
+----------------
+Command line options:
+
+.. code-block::
+
+  process_RNA_sample.sh [options]
+
+  -h | --help                                           Prints this help message (the program exits).
+  -t [tid] | --tumor_id [tid]                           Required. ID of the tumor sample (as used in the LocalApp output files).
+  -o [opath] | --output_directory [opath]               Required. Absolute path to the directory in which all of the output files should be stored. If not existing, the directory will be created. All existing files will be overwritten.
+  -v [rpath] | --tumor_localapp_run_directory [rpath]   Required. Absolute path to main LocalApp output directory generated for the sequencing run with processed sample.
+  -s [hsmd] | --host_system_mounting_directory [hsmd]   Required. Absolute path to the host system mounting directory; the specified directory should include all input and output file paths in its directory tree."
+  -d [did] | --output_tumor_id [did]                    Optional. Tumor sample ID that will be used in the output files (if not provided, the supplied `--tumor_id` value will be used).
+  -u [tpid] | --tumor_pair_id [tpid]                    Optional. Use only if the LocalApp pipeline was run with the "Pair_ID" value specified for the processed RNA sample (in that case, use the same value as was specified in the corresponding sample sheet).
+  -c [cmd] | --container_mounting_directory [cmd]       Optional. Container`s inner mounting point; the host system mounting directory path/prefix will be replaced by the container mounting directory path in all input and output file paths (the default value of "/inpred/data" likely shouldn`t be changed)."
+  -g [True|False] | --inpred_nomenclature [True|False]  Optional. The sample IDs follow InPreD nomenclature (all sample IDs are in format "PPPyyyy-Ann-Bpq-Cll"; please refer to the TSOPPI documentation for details). (default value: False)
+
+
+Example invocation using the Docker image:
+
+.. code-block::
+
+  $ [sudo] docker run \
+      --rm \
+      -it \
+      -v /hs_prefix_path:/inpred/data \
+      inpred/tsoppi_main:v0.1 \
+        bash /inpred/user_scripts/process_RNA_sample.sh \
+          --tumor_id sample_A \
+          --tumor_pair_id pair_A \
+          --tumor_localapp_run_directory /hs_prefix_path/analysis/run1 \
+          --output_directory /hs_prefix_path/postprocessing/run1/sample_A \
+          --host_system_mounting_directory /hs_prefix_path
+
+
+Output files
+------------
+- **[tool_output_dir]/[TMP]/[output_tumor_id]_transposed_metrics_output.tsv**:
+  a condensed and transposed version of the input *MetricsOutput.tsv* file;
+- **[tool_output_dir]/[output_tumor_id]_sample_QC_plot.pdf**: output metrics
+  plot in PDF format;
+- **[tool_output_dir]/[output_tumor_id]_sample_QC_plot.png**: output metrics
+  plot in PNG format;
+- **[tool_output_dir]/[output_tumor_id]_fusions_all.tsv**: all variants from
+  the input fusion CSV file, with the following differences: omitting the
+  "Contig" field, replacing comma-separators with tab-separators and replacing
+  missing values with "." symbols;
+- **[tool_output_dir]/[output_tumor_id]_fusions_PASS.tsv**: same as the file
+  above, but only including variants with value "PASS" in the "Filter" field.
+
+
+
+
+
+(last updated: 2022-03-03)

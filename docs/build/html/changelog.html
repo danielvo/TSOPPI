@@ -58,10 +58,10 @@ are being saved into a new file (*whitelist_details.tsv);</p></li>
 <li><p>jdk-11.0.6 and picard_2.26.2 (namely its tools &quot;AddOrReplaceReadGroups&quot; and &quot;CollectSequencingArtifactMetrics&quot;)
 can now be utilized in order to calculate sequencing artifact metrics for the tumor DNA sample
 (option &quot;–enable_CSAM_check True/False&quot;);</p></li>
-<li><p>patient gender is now taken into account in CNV processing and plotting:</p>
+<li><p>patient sex is now taken into account in CNV processing and plotting:</p>
 <ul>
 <li><p>chrX non-PAR genes are assumed to have 1 copy in copy number neutral male patients;</p></li>
-<li><p>LocalApp-assumed patient gender (derived from tumor DNA sample data) is now being mentioned in more output files;</p></li>
+<li><p>LocalApp-assumed patient sex (derived from tumor DNA sample data) is now being mentioned in more output files;</p></li>
 </ul>
 </li>
 <li><p>PCGR’s mutational signature analysis is being automatically run for samples with &gt;=100 assumed somatic SNVs;</p></li>
@@ -172,7 +172,7 @@ has been added to DNA sample QC plots;</p></li>
 </li>
 <li><p>caveats:</p>
 <ul>
-<li><p>the patient gender, as estimated by the LocalApp, can be wrong.</p></li>
+<li><p>the patient sex, as estimated by the LocalApp, can be wrong.</p></li>
 </ul>
 </li>
 </ul>
@@ -190,7 +190,7 @@ will be assumed to be in use only if this parameter is set to “True”);</p></
 <li><p>when applicable, the new InPreD sample ID nomenclature is now reflected
 in all sample-wise QC plots;</p></li>
 <li><p>changing multiple internal parameter values in the
-<a class="reference internal" href="DNA_sample_postprocessing.html"><span class="doc">DNA sample post-processing tool</span></a>
+<cite>DNA sample post-processing tool</cite> [deprecated as of v.0.3]
 (these parameters don’t affect which variants will be present in the output files,
 they only affect how the output variants will be flagged):
 MIN_TUMOR_DP: 10 -&gt; 50; MIN_TUMOR_VAF: 0.03 -&gt; 0.05; MAX_TUMOR_VAF: 0.98 -&gt; 0.99;</p></li>
@@ -238,8 +238,6 @@ now show the number of callable samples for given variant position.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sample_data_postprocessing.html"><strong>Sample data post-processing</strong> tool</a></li>
-<li class="toctree-l1"><a class="reference internal" href="DNA_sample_postprocessing.html"><strong>DNA sample post-processing</strong> tool</a></li>
-<li class="toctree-l1"><a class="reference internal" href="RNA_sample_postprocessing.html"><strong>RNA sample post-processing</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="software_versions.html">Software versions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>
