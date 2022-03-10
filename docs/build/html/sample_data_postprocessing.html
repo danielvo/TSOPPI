@@ -43,7 +43,7 @@ generating:</p>
 <ul class="simple">
 <li><p>quality control (QC) metrics for both sample types;</p></li>
 <li><p>fusion and splice variant output for RNA samples;</p></li>
-<li><p>small variant output (SNVs and INDELs up to about 25 bp in size), copy number variant
+<li><p>small variant output, copy number variant
 output (<em>CNV</em>) and microsatellite status (MS status) information for DNA samples.</p></li>
 </ul>
 <p>However, LocalApp analyzes all samples independently, and no difference is made
@@ -59,6 +59,29 @@ different variant types;</p></li>
 <li><p>annotate and prioritize small variants called by the LocalApp;</p></li>
 <li><p>assist with sample QC, as well as variant QC and interpretation.</p></li>
 </ul>
+<section id="notes-regarding-small-variant-terminology">
+<h3>Notes regarding small variant terminology<a class="headerlink" href="#notes-regarding-small-variant-terminology" title="Permalink to this headline">¶</a></h3>
+<p>Small variants passing all of LocalApp’s technical quality filters, such as coverage and support,
+are in the post-processing divided into 4 classes, which are being referred to
+throughout the TSOPPI output files:</p>
+<ul class="simple">
+<li><p><strong>BL</strong>: variants located within regions blacklisted in the LocalApp due to
+background noise levels;</p></li>
+<li><p><strong>GL_DB</strong>: variants present in LocalApp’s internal germline databases
+(i.e, having allele count ≥10 in any of LocalApp’s GnomAD exome, GnomAD genome
+and 1000 genomes database);</p></li>
+<li><p><strong>GL_P</strong>: variants assumed to be “germline by proximity” according to LocalApp
+(i.e., having allelic fractions similar to those of known germline variants
+present on the same chromosome);</p></li>
+<li><p><strong>SOM</strong>: the remaining variants (not having been filtered, these are assumed to be somatic).</p></li>
+</ul>
+<p>TSO500 small variants include:</p>
+<ul class="simple">
+<li><p>single nucleotide variants (SNVs): single-base substitutions;</p></li>
+<li><p>multiple nucleotide variants (MNVs): block substitutions;</p></li>
+<li><p>insertions/deletions (INDELs) of limited size (up to about 25 bp).</p></li>
+</ul>
+</section>
 </section>
 <section id="functionality-overview">
 <h2>Functionality overview<a class="headerlink" href="#functionality-overview" title="Permalink to this headline">¶</a></h2>
@@ -66,9 +89,11 @@ different variant types;</p></li>
 <p>The tool’s functionality is broken down into multiple blocks, which are
 enabled/disabled based on the parameter settings and the combination of available
 patient samples (any combination of tumor DNA, normal DNA and tumor RNA samples
-is allowed on input):</p>
+is allowed on input).</p>
+<p>Please note that some TSOPPI-generated files (especially
+intermediate outputs) are not listed in the <em>Input files</em> sections below.</p>
 <section id="meta-information-sample-wise-metrics">
-<h3>1. Meta-information &amp; sample-wise metrics<a class="headerlink" href="#meta-information-sample-wise-metrics" title="Permalink to this headline">¶</a></h3>
+<span id="s1-label"></span><h3>1. Meta-information &amp; sample-wise metrics<a class="headerlink" href="#meta-information-sample-wise-metrics" title="Permalink to this headline">¶</a></h3>
 <p><strong>Enabled by default, triggered by all sample types.</strong></p>
 <p><strong>Functionality:</strong> Creation of quality metrics plots for each input sample
 (these are intended for providing a quick sample-level QC overview and suitable
@@ -89,7 +114,7 @@ paths supplied via options “–dna_tumor_localapp_run_directory”,
 </ul>
 </section>
 <section id="cnv-aggregation">
-<h3>2. CNV aggregation<a class="headerlink" href="#cnv-aggregation" title="Permalink to this headline">¶</a></h3>
+<span id="s2-label"></span><h3>2. CNV aggregation<a class="headerlink" href="#cnv-aggregation" title="Permalink to this headline">¶</a></h3>
 <p><strong>Enabled by default, triggered by tumor DNA sample, utilizing normal DNA sample
 when available.</strong></p>
 <p><strong>Functionality:</strong> Aggregating CNV information from multiple LocalApp output
@@ -111,16 +136,16 @@ files for input DNA samples (located automatically);</p></li>
 </ul>
 <p><strong>Output files:</strong></p>
 <ul class="simple">
-<li><p>“[tumor_sample_ID]_merged_CNV_data.tsv” - all of available CNV-related information
+<li><p>“[tumor_DNA_sample_ID]_merged_CNV_data.tsv” - all of available CNV-related information
 (on sub-gene level) gathered into a single file;</p></li>
-<li><p>“[tumor_sample_ID]_merged_CNV_summary_FC_sorted.tsv” - gene-level CNV
+<li><p>“[tumor_DNA_sample_ID]_merged_CNV_summary_FC_sorted.tsv” - gene-level CNV
 information summary, sorted by FC values;</p></li>
-<li><p>“[tumor_sample_ID]_merged_CNV_summary_location_sorted.tsv” - gene-level
+<li><p>“[tumor_DNA_sample_ID]_merged_CNV_summary_location_sorted.tsv” - gene-level
 CNV information summary, sorted by genome-wide gene start positions.</p></li>
 </ul>
 </section>
 <section id="small-variant-aggregation">
-<h3>3. Small variant aggregation<a class="headerlink" href="#small-variant-aggregation" title="Permalink to this headline">¶</a></h3>
+<span id="s3-label"></span><h3>3. Small variant aggregation<a class="headerlink" href="#small-variant-aggregation" title="Permalink to this headline">¶</a></h3>
 <p><strong>Enabled by default, triggered by tumor DNA sample, utilizing all available
 samples.</strong></p>
 <p><strong>Functionality:</strong> Aggregating small variant information from multiple LocalApp
@@ -134,20 +159,450 @@ substitution types and their and 3-bp genomic contexts;
 not a mutational signature decomposition analysis).</p>
 <p><strong>Input files:</strong></p>
 <ul class="simple">
-<li><p>X;</p></li>
-<li><p>.</p></li>
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/VariantMatching/[sample_ID]/[sample_ID]_MergedSmallVariants.genome.vcf”
+files for input DNA samples (located automatically);</p></li>
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/Tmb/[sample_ID]/[sample_ID]_TMB_Trace.tsv”
+file for input tumor DNA sample (located automatically);</p></li>
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/RnaMarkDuplicates/[sample_ID]/[sample_ID].bam”
+file for input tumor RNA sample (located automatically);</p></li>
+<li><p>a reference fasta file supplied via the <em>–reference_fasta_file</em> option.</p></li>
 </ul>
 <p><strong>Output files:</strong></p>
 <ul class="simple">
-<li><p>“[tumor_sample_ID]_small_variant_AF_plots.pdf”</p></li>
-<li><p>“[tumor_sample_ID]_sample_concordance.tsv”</p></li>
-<li><p>“[tumor_sample_ID]_small_variant_overview_by_tier.tsv”</p></li>
-<li><p>“[tumor_sample_ID]_small_variant_overview_by_type.tsv”</p></li>
-<li><p>“[tumor_sample_ID]_small_variants_all.vcf”</p></li>
-<li><p>“[tumor_sample_ID]_small_variants_somatic.vcf”</p></li>
-<li><p>“[tumor_sample_ID]_joint_mutational_signature.pdf”</p></li>
+<li><p>“[tumor_DNA_sample_ID]_small_variant_AF_plots.pdf” - allelic fraction (AF) distribution
+plots for the individual classes of small variants (BL, GL_DB, GL_P, SOM) -
+scatter plots of normal DNA sample is available, histograms otherwise;</p></li>
+<li><p>“[tumor_DNA_sample_ID]_sample_concordance.tsv” - tumor DNA/normal DNA and tumor DNA/tumor RNA
+sample concordances based on small variant presence and AF values - format
+details and variant inclusion criteria are listed in the file header;</p></li>
+<li><p>“[tumor_DNA_sample_ID]_small_variant_overview_by_type.tsv” - a breakdown of variant
+counts by class and type (SNVs, MNVs, INDELs);</p></li>
+<li><p>“[tumor_DNA_sample_ID]_small_variants_all.vcf” - a PCGR-/CPSR-ready VCF file
+including all small variants classified as BL, GL_DB, GL_P or SOM;</p></li>
+<li><p>“[tumor_DNA_sample_ID]_small_variants_somatic.vcf” - a PCGR-/CPSR-ready VCF file
+with likely somatic variants (if a normal DNA sample is available, this
+encompasses all variants with tumor DNA sample AF at least 5 times higher than
+the normal DNA sample AF; if a normal DNA sample is not available,
+all SOM class variants are included instead);</p></li>
+<li><p>“[tumor_DNA_sample_ID]_joint_mutational_signature.pdf”
+(as described in the functionality paragraph above).</p></li>
 </ul>
-<p>(last updated: 2022-03-04)</p>
+<p>Additional notes:</p>
+<ul class="simple">
+<li><p>When available, the tumor RNA sample will be checked for support of small
+variants called in the tumor DNA sample. As of TSOPPI v0.3, it is not checked
+whether locations of the individual variants are covered by the TSO500 RNA assay.</p></li>
+<li><p>As a consequence of different read mapping software being used for the DNA and
+RNA samples, some variants (especially complex variants and INDELs in certain
+genomic areas) might be reported differently for DNA and RNA samples (even
+despite variant format normalization included in TSOPPI). It is thus strongly
+recommended to manually check the RNA support of all critically important small
+variants.</p></li>
+</ul>
+</section>
+<section id="pcgr-cpsr-annotation">
+<span id="s4-label"></span><h3>4. PCGR/CPSR annotation<a class="headerlink" href="#pcgr-cpsr-annotation" title="Permalink to this headline">¶</a></h3>
+<p><strong>Enabled by default, triggered by tumor DNA sample, utilizing available DNA
+samples.</strong></p>
+<p><strong>Functionality:</strong> Annotation of all BL, GL_DB, GL_P and SOM variants found in
+the DNA tumor sample with information necessary for interpretation in precision
+medicine setting. Annotation of non-reference variants with regard to cancer
+predisposition (run on normal DNA sample data when available, and on tumor DNA
+sample data otherwise). (Please refer to the official
+<a class="reference external" href="https://github.com/sigven/pcgr">PCGR</a>/<a class="reference external" href="https://github.com/sigven/cpsr">CPSR</a>
+resources for details regarding the software’s implementation and functionality.)</p>
+<p><strong>Input files:</strong></p>
+<ul class="simple">
+<li><p>“[tumor_DNA_sample_ID]_small_variants_all.vcf”,
+“[tumor_DNA_sample_ID]_small_variants_somatic.vcf” and an intermediate CPSR-ready
+non-reference variant VCF file, all generated during the <em>small variant aggregation</em>
+step as described above.</p></li>
+</ul>
+<p><strong>Output files:</strong></p>
+<ul class="simple">
+<li><p>Directory “[tumor_DNA_sample_ID]_PCGR_0.9.1_all” - PCGR annotation output for
+all BL, GL_DB, GL_P and SOM variants found in the tumor DNA sample; generated
+with options “–show_noncoding”, “–assay TARGETED”, “–include_trials”;</p></li>
+<li><p>Directory “[tumor_DNA_sample_ID]_PCGR_0.9.1_somatic” - PCGR annotation output for
+variants present in file “[tumor_DNA_sample_ID]_small_variants_somatic.vcf”
+(see the <a class="reference internal" href="#s3-label"><span class="std std-ref">3. Small variant aggregation</span></a> section above for details);
+generated with options “–show_noncoding”, “–assay TARGETED”, “–include_trials”;</p></li>
+<li><p>Directory “[tumor_DNA_sample_ID]_PCGR_0.9.1_mutational_signatures” - PCGR annotation
+output for variants present in file “[tumor_DNA_sample_ID]_small_variants_somatic.vcf”,
+with an additional mutational signature analysis enabled (only executed if the
+input file contains &gt;= 100 SNVs); generated with options “–show_noncoding”,
+“–assay WES”, “–include_trials”, “–estimate_signatures”,
+“–min_mutations_signatures 100”, “–all_reference_signatures”, “–include_artefact_signatures”;</p></li>
+<li><p>Directory “[tumor_DNA_sample_ID]_CPSR_0.6.1_all_tumor_variants” (or
+“[normal_sample_ID]_CPSR_1.0.0_all_normal_variants”) run on all non-reference
+variants passing basic quality filters that were reported for the tumor DNA
+sample (or the normal DNA sample, if available); generated with options
+“–panel_id 0”, “–secondary_findings”, “–classify_all”, “–gwas_findings”.</p></li>
+</ul>
+</section>
+<section id="small-variant-prioritization">
+<span id="s5-label"></span><h3>5. Small variant prioritization<a class="headerlink" href="#small-variant-prioritization" title="Permalink to this headline">¶</a></h3>
+<p><strong>Enabled by default, triggered by tumor DNA sample, utilizing all available
+samples.</strong></p>
+<p><strong>Functionality:</strong> Selection of small variants potentially relevant for cancer
+diagnostics and treatment. Integration of LocalApp and PCGR/CPSR annotation
+resources with other information (InPreD small variant recurrence data,
+CN values and FoundationOne Liquid CDx targets).</p>
+<p><strong>Input files:</strong></p>
+<ul class="simple">
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/Annotation/[sample_ID]/[sample_ID]_SmallVariants_Annotated.json.gz”
+file for input tumor DNA sample (located automatically);</p></li>
+<li><p>“*.pcgr_acmg.grch37.snvs_indels.tiers.tsv” and “*.pcgr_acmg.grch37.pass.tsv.gz”
+files from the “[tumor_DNA_sample_ID]_PCGR_0.9.1_all” directory generated by PCGR
+(see the <a class="reference internal" href="#s4-label"><span class="std std-ref">4. PCGR/CPSR annotation</span></a> section for details);</p></li>
+<li><p>“*.cpsr.grch37.snvs_indels.tiers.tsv” and “*.cpsr.grch37.pass.tsv.gz” files
+from the CPSR output directory (see the <a class="reference internal" href="#s4-label"><span class="std std-ref">4. PCGR/CPSR annotation</span></a> section for details);</p></li>
+<li><p>A range of files generated by TSOPPI in previous analysis steps, particularly
+outputs related to small variants and CNVs.</p></li>
+<li><p><em>internal TSOPPI container resource:</em> “/inpred/resources/F1LCDx_genes.tsv”;</p></li>
+<li><p><em>internal TSOPPI container resource:</em> “/inpred/resources/blacklisted_variants.tsv”;</p></li>
+<li><p>(optional) variant recurrence table generated by the
+<a class="reference internal" href="variant_recurrence_table_creation.html"><span class="doc">variant recurrence table update</span></a> tool.</p></li>
+</ul>
+<p><strong>Output files:</strong></p>
+<ul class="simple">
+<li><p>“[tumor_DNA_sample_ID]_small_variant_table.tsv” - aggregated information about
+small variants with potential relevance for cancer diagnostics and treatment
+(please see the file header for details regarding the output format and variant
+inclusion criteria);</p></li>
+<li><p>“[tumor_DNA_sample_ID]_small_variant_table_blacklisted.tsv” - aggregated information
+about small variants that fulfill criteria for inclusion in the
+“[tumor_DNA_sample_ID]_small_variant_table.tsv” file, but which are observed too
+often to be relevant (please see the notes below);</p></li>
+<li><p>“[tumor_DNA_sample_ID]_predisposition_gene_variant_table_*.tsv” - an overview of
+small variants located within cancer predisposition genes defined in a dedicated
+<a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/31050713/">ESMO paper</a>;</p></li>
+<li><p>“[tumor_DNA_sample_ID]_small_variant_overview_by_tier.tsv” - a breakdown of variant
+counts by class and PCGR-reported ACMG/AMP-based tier.</p></li>
+</ul>
+<p>Additional notes:</p>
+<ul class="simple">
+<li><p>An internal TSOPPI file (/inpred/resources/blacklisted_variants.tsv) decides
+by default which variants will be redirected to the blacklist variant table
+output. This file currently lists only variants appearing with &gt;= 35 % VAF
+support in at least 50 % of OUS-investigated InPreD tumor samples (when only
+considering samples in which the variant position is callable).</p></li>
+<li><p>An own blacklist definition file can be supplied via this tool’s parameter
+“–inpred_small_variant_blacklist”. Values in the first column of non-commented
+lines in the supplied blacklist definition file will be interpreted as variant
+IDs in format “chromosome:position:reference_allele&gt;alternative_allele”
+(using 1-based positions, e.g. “8:145738767:CG&gt;C”); any additional columns
+will be ignored during the processing.</p></li>
+<li><p>Much of the information provided in the output variant tables is tied to primary
+Ensembl transcripts, which are determined for individual variants by
+<a class="reference external" href="https://grch37.ensembl.org/info/docs/tools/vep/index.html">VEP</a>
+during the PCGR/CPSR annotation. Information about variants’ notable protein
+coding consequences in other transcripts (whether Ensembl or RefSeq), as
+reported by LocalApp’s Nirvana, can be found in the “Coding_transcript_consequences”
+column of the two “*small_variant_table*” output files.</p></li>
+</ul>
+</section>
+<section id="igv-links-generation">
+<span id="s6-label"></span><h3>6. IGV-links generation<a class="headerlink" href="#igv-links-generation" title="Permalink to this headline">¶</a></h3>
+<p><strong>Enabled by default, triggered by tumor DNA sample, utilizing all available
+samples.</strong></p>
+<p><strong>Functionality:</strong> Creation of HTML files simplifying variant QC in IGV by single-click
+BAM file loading and variant loci hopping. Own variant files are created for
+each user specified via the “–port_number_labels” parameter, allowing for
+parallel use by multiple users on the same machine (reserving a different IGV
+communication port for each user).</p>
+<p><strong>Input files:</strong></p>
+<ul class="simple">
+<li><p>“*.pcgr_acmg.grch37.snvs_indels.tiers.tsv” file from the
+“[tumor_DNA_sample_ID]_PCGR_0.9.1_all” directory generated by PCGR
+(see the <a class="reference internal" href="#s4-label"><span class="std std-ref">4. PCGR/CPSR annotation</span></a> section for details);</p></li>
+<li><p>TSOPPI-generated “[tumor_DNA_sample_ID]_small_variant_table.tsv” file (described above).</p></li>
+</ul>
+<p><strong>Output files:</strong></p>
+<ul class="simple">
+<li><p>A set of “[tumor_DNA_sample_ID]_IGV_links_all_variants.port_[Number]_[Label].html” files
+generated for all port Number and Label value pairs determined by the
+“–initial_port_number” and “–port_number_labels” tool parameters. IGV links
+for all BL, GL_DB, GL_P and SOM variants are included in this output file.</p></li>
+<li><p>A set of “[tumor_DNA_sample_ID]_IGV_links_interpretation_table_variants.port_[Number]_[Label].html” files
+generated for all port Number and Label value pairs determined by the
+“–initial_port_number” and “–port_number_labels” tool parameters. Only IGV links
+for variants present in the “[tumor_DNA_sample_ID]_small_variant_table.tsv”
+file are included in this output.</p></li>
+</ul>
+<p>Additional notes:</p>
+<ul class="simple">
+<li><p>Besides HTML links that allow directly jumping into genomic loci of the
+individual variants within IGV, all output files also provide links for IGV
+session initialization/reset and for loading of relevant patient bam files.
+The tool parameter “–igv_session_file [path]” needs to be supplied in order
+to specify path to a standard IGV session file. Paths to the following BAM files
+are automatically determined and included:</p>
+<ul>
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/StitchedRealigned/[sample_ID]/[sample_ID].bam”
+file paths for input DNA samples (these are the files on which small variant
+calling is performed by the LocalApp);</p></li>
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/DnaRealignment/[sample_ID]/[sample_ID].bam”
+file paths for input DNA samples (these are BAM files with separate R1 and R2 sequences);</p></li>
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/RnaMarkDuplicates/[sample_ID]/[sample_ID].bam”
+file for input tumor RNA sample.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="cnv-plotting">
+<span id="s7-label"></span><h3>7. CNV plotting<a class="headerlink" href="#cnv-plotting" title="Permalink to this headline">¶</a></h3>
+<p><strong>Enabled by default, triggered by tumor DNA sample, utilizing all available
+samples.</strong></p>
+<p><strong>Functionality:</strong> Creation of plots aimed for helping with copy number change
+interpretation. Gene-wise CNVs and variant AFs plotted on gene, chromosome and
+sample level.</p>
+<p><strong>Input files:</strong></p>
+<ul class="simple">
+<li><p>TSOPPI-generated file “[tumor_DNA_sample_ID]_merged_CNV_data.tsv” (see the <a class="reference internal" href="#s2-label"><span class="std std-ref">2. CNV aggregation</span></a> section for details);</p></li>
+<li><p><em>internal TSOPPI container resource:</em> “/inpred/resources/centromere_data/hg19_chromosome_sizes.tsv”;</p></li>
+<li><p><em>internal TSOPPI container resource:</em> “/inpred/resources/merged_normal_sample_CNV_data.tsv”;</p></li>
+<li><p><em>internal TSOPPI container resource:</em> “/inpred/resources/PAR_genes.tsv”.</p></li>
+</ul>
+<p><strong>Output files:</strong></p>
+<ul class="simple">
+<li><p>“[tumor_DNA_sample_ID]_CNV_overview_plots.pdf” - CNV plots on
+sample/genome and chromosome level, including variant AF plots and
+gene CNV plots for the available samples;</p></li>
+<li><p>“[tumor_DNA_sample_ID]_CNV_distribution_plots.pdf” - gene-level plots showing
+CN values observed in the available DNA samples in the context of a CN value
+distribution within a group of unrelated normal samples.</p></li>
+</ul>
+<p>Additional notes:</p>
+<ul>
+<li><p>The <em>*CNV_overview_plots.pdf</em> document is divided into four sections, with
+the plots within each section being marked by unique title prefixes
+(“[An]”, “[Bn]”, “[Cn]”, “[Dna]”/”[Dnb]”). Depending on whether normal DNA
+and/or tumor RNA samples are included in the analysis, some plots might not be
+generated. Specific page numbers might therefore show different plot types
+for different patients. A given title prefix will however always mark the same
+plot type.</p></li>
+<li><p>Please note that the “[C3]”-prefixed plot is different from the remaining “[Cn]”
+plots: the x-axis value on this plot represents the variant order rather than
+genomic position. The relative width of each chromosome on the “C3”-plot is thus
+determined by per-chromosome variant counts rather than chromosome lengths.
+This plot should allow for better visual evaluation of possible contamination
+issues (variant clusters forming vertical bars on other “Cn” plots should be
+stretched out into larger areas on this plot, potentially revealing breakpoints
+with visible AFs jumps).</p></li>
+<li><p>The <em>*CNV_distribution_plots.pdf</em> document shows for each gene what its CN
+value distribution is in normal samples (i.e., samples in which frequent CN
+changes are not expected), both before and after adjustment to the tumor
+content value estimated for given tumor DNA sample.
+It can help answer the following questions:</p>
+<ul class="simple">
+<li><p>Does the LocalApp tend to systematically over- or under-estimate the CN value
+for given gene?</p></li>
+<li><p>How wide/narrow is the CN value distribution for given gene?</p></li>
+</ul>
+<p>A certain CN value might be a clear outlier for one gene, while being well
+within the expected “normal” range for another gene. The displayed percentile
+information should provide an objective measure of how (un)likely a given CN
+value that was observed in a patient’s DNA sample is to be observed in (mostly)
+CN-neutral samples.</p>
+</li>
+</ul>
+</section>
+<section id="sequencing-artifact-assessment">
+<span id="s8-label"></span><h3>8. Sequencing artifact assessment<a class="headerlink" href="#sequencing-artifact-assessment" title="Permalink to this headline">¶</a></h3>
+<p><strong>Disabled by default, triggered by tumor DNA sample if the “–enable_CSAM_check”
+option is set to “True”, utilizing only the DNA tumor sample.</strong></p>
+<p><strong>Functionality:</strong> Utilizing the <a class="reference external" href="https://broadinstitute.github.io/picard/">Picard tools (v2.26.2)</a>
+to determine the presence of sequencing artifacts (oxidation and/or deamination
+in particular).</p>
+<p><strong>Input files:</strong></p>
+<ul class="simple">
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/DnaRealignment/[sample_ID]/[sample_ID].bam”
+file for tumor DNA sample (located automatically);</p></li>
+<li><p>a reference fasta file supplied via the <em>–reference_fasta_file</em> option.</p></li>
+</ul>
+<p><strong>Output files:</strong></p>
+<ul class="simple">
+<li><p>“[tumor_DNA_sample_ID]_sequencing_artifact_summary_metrics.tsv” - summary of the
+sequencing metrics calculation output.</p></li>
+</ul>
+<p>Additional notes:</p>
+<ul class="simple">
+<li><p>Picard tools <em>AddOrReplaceReadGroups</em> and <em>CollectSequencingArtifactMetrics</em>
+are utilized during this step. The analysis is performed on tumor DNA BAM file
+without read stitching (separate R1 and R2 reads are investigated).</p></li>
+<li><p>The complete output of this analysis can be found in tool’s results sub-directory
+“TMP/CSAM_FILES” if the parameter “–remove_temporary_files” is set to “False”.</p></li>
+</ul>
+</section>
+<section id="tumor-dna-coverage-and-whitelist-details">
+<span id="s9-label"></span><h3>9. Tumor DNA coverage and whitelist details<a class="headerlink" href="#tumor-dna-coverage-and-whitelist-details" title="Permalink to this headline">¶</a></h3>
+<p><strong>Enabled by default, triggered by tumor DNA sample, utilizing only the tumor DNA sample.</strong></p>
+<p><strong>Functionality:</strong> Creation of textual and graphical output detailing tumor DNA
+sample coverage statistics at basepair, target, gene and sample resolutions.
+Assembling additional information about genes and loci especially relevant for
+currently available targeted treatment options in InPreD.</p>
+<p><strong>Input files:</strong></p>
+<ul class="simple">
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/VariantMatching/[sample_ID]/[sample_ID]_MergedSmallVariants.genome.vcf”
+file for input tumor DNA sample (located automatically);</p></li>
+<li><p><em>internal TSOPPI container resource:</em> “/inpred/resources/exon_targets/TSO500_exon_targets.bed”;</p></li>
+<li><p><em>internal TSOPPI container resource:</em> “/inpred/resources/whitelist_data/whitelist_gene_regions.txt”.</p></li>
+<li><p><em>internal TSOPPI container resource:</em> “/inpred/resources/whitelist_data/whitelist_transvar_processed.tsv”;</p></li>
+</ul>
+<p><strong>Output files:</strong></p>
+<ul class="simple">
+<li><p>“[tumor_DNA_sample_ID]_coverage_details.tsv.gz” - coverage statistics for
+exonic regions targeted by the TSO500 DNA assay (on basepair, target and gene
+level);</p></li>
+<li><p>“[tumor_DNA_sample_ID]_coverage_histogram.tsv” - coverage histogram details
+for exonic regions targeted by the TSO500 DNA assay (providing information about
+the proportion of targeted areas with coverage &gt;= X and &lt;= X for all values
+of X relevant for the input DNA tumor sample);</p></li>
+<li><p>“[tumor_DNA_sample_ID]_coverage_plots.pdf” - graphical representation of selected
+information available in the *coverage_details.tsv.gz and *coverage_histogram.tsv
+files;</p></li>
+<li><p>“[tumor_DNA_sample_ID]_whitelist_details.tsv” - coverage and allele information
+for loci/variants and genes deemed relevant for targeted treatment options in InPreD.</p></li>
+</ul>
+<p>Additional notes:</p>
+<ul class="simple">
+<li><p>The processed coverage statistics values are extracted from LocalApp’s VCF file that
+reports coverage values and allelic composition for all assay-targeted bases,
+regardless of presence/absence of reportable small variant findings.
+The reported values should be understood as “coverage usable for LocalApp
+small varint calling” rather than total available coverage.</p></li>
+</ul>
+</section>
+<section id="fusion-and-splice-variant-aggregation">
+<span id="s10-label"></span><h3>10. Fusion and splice variant aggregation<a class="headerlink" href="#fusion-and-splice-variant-aggregation" title="Permalink to this headline">¶</a></h3>
+<p><strong>Enabled by default, triggered by tumor RNA sample, utilizing only the tumor RNA sample.</strong></p>
+<p><strong>Functionality:</strong> Aggregation of fusion and splice variant output generated
+by the LocalApp. Reformatting into a table directly usable during quality
+control of these variants.</p>
+<p><strong>Input files:</strong></p>
+<ul class="simple">
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/RnaFusionMerge/[sample_ID]/[sample_ID]_AllFusions.csv” -
+file for tumor RNA sample (located automatically);</p></li>
+<li><p>“[LocalApp_output_directory]/Logs_Intermediates/RnaSpliceVariantCalling/[sample_ID]/[sample_ID].tsv” -
+file for tumor RNA sample (located automatically).</p></li>
+</ul>
+<p><strong>Output files:</strong></p>
+<ul class="simple">
+<li><p>“[tumor_RNA_sample_ID]_fusion_and_splice_variant_candidates.tsv” - aggregated
+fusion and splice variant output (please see the file header for format details).</p></li>
+</ul>
+<p>Additional notes:</p>
+<ul class="simple">
+<li><p>LocalApp’s final fusion variant results are generated by merging ‘filtered’ ‘Manta’
+caller output with the output of the ‘SpliceGirl’ caller. The latter caller generates
+splice variant calls as well, and it is sometimes questionable whether a given
+variant candidate should be interpreted as a fusion or rather as a splice variant.</p></li>
+<li><p>The aggregated information generated by TSOPPI allows for re-classification of the individual
+variants and/or for adjustment of their breakpoints. Values within field/column names prefixed
+with “Provisional_” are meant to be checked; the corrected/final values can then
+be stored in corresponding “partner fields” without the “Provisional_” prefix.</p></li>
+<li><p>Please note that the number of splice and fusion variant per sample is <em>highly</em>
+variable. Detailed manual QC of all variant candidates might in some cases not be feasible.</p></li>
+<li><p>IGV link files for fusion and splice variants are currently not generated by TSOPPI.</p></li>
+</ul>
+</section>
+</section>
+<section id="running-the-tool">
+<h2>Running the tool<a class="headerlink" href="#running-the-tool" title="Permalink to this headline">¶</a></h2>
+<p>Command line options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>process_patient_samples.sh [options]
+
+--help                                       Prints this help message (the program exits).
+
+Core path options:
+--output_directory [opath]                   Required. Absolute path to the directory in which all of the output files should be stored. If not existing, the directory will be created. All existing files will be overwritten.
+--reference_fasta_file [rff]                 Required. Absolute path to an indexed reference FASTA file (e.g., the LocalApp pipeline`s reference fasta file, which is located in &#39;[LocalApp_directory]/resources/genomes/hg19_hardPAR/genome.fa&#39;).
+--host_system_mounting_directory [hsmd]      Required. Absolute path to the host system mounting directory; the specified directory should include all input and output file paths in its directory tree.&quot;
+--container_mounting_directory [cmd]         Optional. Container`s inner mounting point; the host system mounting directory path/prefix will be replaced by the container mounting directory path in all input and output file paths (the default value of &quot;/inpred/data&quot; likely shouldn`t be changed).&quot;
+
+Tumor DNA sample related options:
+--dna_tumor_id [tid]                         Optional. ID of the tumor DNA sample, as used in the LocalApp output files. (default value: NA; setting this parameter to another value will enable all post-processing steps requiring tumor DNA data - parameters specifying the DNA tumor sample details therefore need to be set in that case).
+--dna_tumor_pair_id [tpid]                   Optional. Required if the LocalApp pipeline was run with the &quot;Pair_ID&quot; value specified for the tumor DNA sample (in that case, use the same value as was used in the corresponding sample sheet).
+--dna_tumor_output_id [did]                  Optional. Tumor DNA sample ID that will be used in the output files (if not provided, the supplied &#39;--tumor_id&#39; value will be used).
+--dna_tumor_localapp_run_directory [rpath]   Optional. Absolute path to main LocalApp output directory generated for the sequencing run with processed tumor DNA sample.
+--dna_tumor_purity [tp]                      Optional. Estimated tumor purity (a value in range (0, 1]). If not supplied, default tumor purity value of 0.5 will be used.
+--dna_tumor_site [ts]                        Optional. One of the tumor sites recognized by PCGR (denoted by integers in range [0, 30]). (default value: 0 [no tumor site specified])
+
+Normal DNA sample related options:
+--normal_id [nid]                            Optional. ID of the normal DNA sample, as used in the LocalApp output files. (default value: NA; setting this parameter to another value will enable post-processing of the tumor DNA sample together with a matched normal - parameters specifying the normal DNA sample details need to be set in that case).
+--normal_pair_id [npid]                      Optional. Required if the LocalApp pipeline was run with the &quot;Pair_ID&quot; value specified for the normal sample (in that case, use the same value as was specified in the corresponding sample sheet).
+--normal_output_id [bid]                     Optional. Normal sample ID that will be used in the output files (if not provided, the supplied &#39;--normal_id&#39; value will be used).
+--normal_localapp_run_directory [npath]      Optional. Absolute path to main LocalApp output directory generated for the sequencing run with processed normal sample. If not specified, value of parameter &#39;tumor_localapp_run_directory&#39; will be used.
+
+Tumor RNA sample related options:
+--rna_tumor_id [rtid]                        Optional. ID of the matching RNA tumor sample, as used in the LocalApp output files. (default value: NA; setting this parameter to another value will enable all post-processing steps requiring RNA data - parameters specifying the tumor RNA sample details need to be set in that case).
+--rna_tumor_pair_id [rtpid]                  Optional. Required if the LocalApp pipeline was run with the &quot;Pair_ID&quot; value specified for the matching RNA tumor sample (in that case, use the same value as was specified in the corresponding sample sheet).
+--rna_tumor_output_id [ortid]                Optional. RNA tumor sample ID that will be used in the output files (if not provided, the supplied &#39;--rna_tumor_id&#39; value will be used).
+--rna_tumor_localapp_run_directory [rrd]     Optional. Absolute path to main LocalApp output directory generated for the sequencing run with matching RNA tumor sample.  If not specified, value of parameter &#39;tumor_localapp_run_directory&#39; will be used.
+
+Remaining input/output customization:
+--initial_port_number [ipn]                  Optional. The lowest port number that will be utilized for execution of IGV commands; integers following the initial port number will be used if multiple port numbers are necessary (the total number of necessary ports will correspond to the number of labels in the supplied &#39;--port_number_labels&#39; parameter value). Use integers larger than zero. (default value: 60151)
+--port_number_labels [pnl]                   Optional. String values that will be used to label the intended use/user of the individual port numbers. Muliple labels (separated by spaces and all together enclosed by quotes) can be supplied. (default value: &quot;User1 User2&quot;)
+--igv_session_file [isf]                     Optional. Path to an IGV session file that should be used for viewing the identified variants. If supplied, the path will be used as-is for IGV command html links creation (the resulting links are meant for outside-the-container use only). (no default value)
+--enable_CSAM_check [True|False]             Optional. Enable running of Picard Tools` CollectSequencingArtifactMetrics utility on the tumor DNA sample. (default value: False)
+--variant_recurrence_table [vrt]             Optional. Absolute path to a variant recurrence table generated by the &quot;update_variant_recurrence_table&quot; TSOPPI tool. If supplied, the output small variant interpretation table will include the recurrence information. (default value: &quot;NA&quot;)
+--localapp_version [lav]                     Optional. Version of the LocalApp pipeline that was used for generating the input of this tool. (default value: &quot;2.2.0.12&quot;; change to &quot;2.0.1.4&quot; when post-processing samples analyzed with an older LocalApp version)
+--inpred_nomenclature [True|False]           Optional. Set to &quot;True&quot; if the sample IDs follow InPreD nomenclature (all sample IDs are in format &quot;PPPyyyy-Ann-Bpq-Cll&quot;; please refer to the TSOPPI documentation for details). (default value: False)
+--remove_temporary_files [True|False]        Optional. A switch enabling/disabling removal of the &quot;TMP&quot; results sub-directory (located under the selected output directory) upon successful post-processing completion. (default value: True)
+--inpred_gene_whitelist [igw]                Optional. A list of genes for which coverage statistics will be generated. (default value: &quot;NA&quot; - an internal list will be used)
+--inpred_small_variant_whitelist [isvw]      Optional. A list of small variants for which coverage statistics will be generated. (default value: &quot;NA&quot; - an internal list will be used)
+--inpred_small_variant_blacklist [isvb]      Optional. A list of small variants which will not be deposited into the variant interpretation table, but instead into a separate blacklist table with the same format. (default value: &quot;NA&quot; - an internal list will be used)
+</pre></div>
+</div>
+<p>Example invocation using the Docker image:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ [sudo] docker run \
+    --rm \
+    -it \
+    -v /hs_prefix_path:/inpred/data \
+    inpred/tsoppi_main:v0.3 \
+      bash /inpred/user_scripts/process_patient_samples.sh \
+        --dna_tumor_purity 0.6 \
+        --dna_tumor_site 5 \
+        --dna_tumor_id tumor_DNA_A \
+        --dna_tumor_pair_id tumor_pair_DNA_A \
+        --dna_tumor_localapp_run_directory /hs_prefix_path/analysis/run1 \
+        --normal_id normal_A \
+        --normal_pair_id normal_pair_A \
+        --normal_localapp_run_directory /hs_prefix_path/analysis/run2 \
+        --rna_tumor_id tumor_RNA_A \
+        --rna_tumor_pair_id tumor_pair_RNA_A \
+        --rna_tumor_localapp_run_directory /hs_prefix_path/analysis/run3 \
+        --output_directory /hs_prefix_path/postprocessing/run1/patient_A \
+        --variant_recurrence_table /hs_prefix_path/postprocessing/variant_recurrence_table_[date].tsv \
+        --igv_session_file /hs_prefix_path/IGV_data/TSO500_session_file.xml \
+        --reference_fasta_file /hs_prefix_path/TSO_500_LocalApp_v2.2.0.12/resources/genomes/hg19_hardPAR/genome.fa \
+        --port_number_labels &quot;Alice Bob&quot; \
+        --host_system_mounting_directory /hs_prefix_path \
+        --enable_CSAM_check False \
+        --remove_temporary_files False \
+        --inpred_nomenclature True
+</pre></div>
+</div>
+<section id="using-igv-port-commands">
+<h3>Using IGV port commands<a class="headerlink" href="#using-igv-port-commands" title="Permalink to this headline">¶</a></h3>
+<p>Depending on the values of parameters “–initial_port_number N” (default value: 60151)
+and “–port_number_labels ‘U1 U2 .. Um’” (default value: “User1 User2”), the <em>process_patient_samples.sh</em>
+tool creates sets of IGV command files (as described in the <a class="reference internal" href="#s6-label"><span class="std std-ref">6. IGV-links generation</span></a> section)
+for the following user-port combinations:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>user “U1”, port N;</p></li>
+<li><p>user “U2”, port N+1;</p></li>
+<li><p>user “Um”, port N+m-1.</p></li>
+</ul>
+</div></blockquote>
+<p>The intention is to enable any combination of users to work simultaneously on the
+same machine without disturbing each other with IGV command triggers (as each user can
+reserve his/her own port for IGV use). The respective users need to start their
+own IGV instances with the option “–port=X”, where X is their dedicated port number.
+(IGV v.2.8.0 has been extensively tested with this feature.)</p>
+<p>(last updated: 2022-03-10)</p>
 </section>
 </section>
 </section>
@@ -178,6 +633,7 @@ not a mutational signature decomposition analysis).</p>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>Sample data post-processing</strong> tool</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#functionality-overview">Functionality overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-tool">Running the tool</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>

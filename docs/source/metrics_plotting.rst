@@ -16,6 +16,28 @@ and sequencer-generated metrics for sets of samples across multiple sequencing/a
 The plots can be useful for identifying sample/run outliers, and for monitoring
 long-terms trends in the sequencing and primary analysis outputs.
 
+Metric types
+------------
+Each metric plot title is prefixed with one of the following type identifiers:
+
+- **[Sequencer flowcell run metric]** - plots based on values retrieved
+  from sequencer-generated *RunCompletionStatus.xml* files; these metrics are
+  generated per flowcell;
+- **[LocalApp core X metric]** - the most important metrics retrieved from
+  LocalApp-generated *MetricsOutput.tsv* files; each of these metrics has its
+  own associated Illumina-recommended "Guideline Quality Threshold(s)" (Upper-
+  and/or Lower- Specification Limits: USL/LSL), which are also displayed on the
+  individual plots; the "X" in the prefix can be either "DNA", "RNA" or "run",
+  with the "run" values jointly representing all demultiplexed samples (DNA + RNA);
+- **[InPreD core X metric]** - LocalApp-generated *MetricsOutput.tsv* values deemed
+  important in the InPreD context despite having no associated USL/LSL values;
+- **[LocalApp X metric]** - all remaining LocalApp-generated *MetricsOutput.tsv*
+  values.
+
+ Information about LocalApp core metrics can be found in the LocalApp v2.2 manual
+ on pages 20-21. These metrics are also represented on sample QC plots generated
+ by the :doc:`sample data post-processing </sample_data_postprocessing>` tool.
+
 Input files
 -----------
 - **[LocalApp_output_directory]/Results/MetricsOutput.tsv** files for n>=1 runs
@@ -72,6 +94,9 @@ Command line options:
                         label of the run which should be highlighted in the
                         output plots (if not supplied, the last supplied label
                         will determine the highlighted run)
+    -n {True,False}, --create_plots {True,False}
+                        True/False value determining whether the output metric plots PDF document
+                        should be created; if set to "False", only the transposed and merged metrics files will be produced
 
 Example invocation using the Docker image:
 
@@ -102,4 +127,4 @@ Output files
 - **[tool_output_directory]/intermediate_metrics_files/master_metrics_table.tsv**: aggregated analysis-run metrics for all input *MetricsOutput.tsv* files;
 - **[tool_output_directory]/intermediate_metrics_files/[run_label_N]_metrics.tsv**: parsed and transposed analysis-run metrics table for Nth input *MetricsOutput.tsv* file (the corresponding *run_label* value is used in the file name).
 
-(last updated: 2022-03-03)
+(last updated: 2022-03-10)

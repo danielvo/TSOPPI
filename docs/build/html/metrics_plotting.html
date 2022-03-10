@@ -49,6 +49,30 @@ and sequencer-generated metrics for sets of samples across multiple sequencing/a
 The plots can be useful for identifying sample/run outliers, and for monitoring
 long-terms trends in the sequencing and primary analysis outputs.</p>
 </section>
+<section id="metric-types">
+<h2>Metric types<a class="headerlink" href="#metric-types" title="Permalink to this headline">¶</a></h2>
+<p>Each metric plot title is prefixed with one of the following type identifiers:</p>
+<ul class="simple">
+<li><p><strong>[Sequencer flowcell run metric]</strong> - plots based on values retrieved
+from sequencer-generated <em>RunCompletionStatus.xml</em> files; these metrics are
+generated per flowcell;</p></li>
+<li><p><strong>[LocalApp core X metric]</strong> - the most important metrics retrieved from
+LocalApp-generated <em>MetricsOutput.tsv</em> files; each of these metrics has its
+own associated Illumina-recommended “Guideline Quality Threshold(s)” (Upper-
+and/or Lower- Specification Limits: USL/LSL), which are also displayed on the
+individual plots; the “X” in the prefix can be either “DNA”, “RNA” or “run”,
+with the “run” values jointly representing all demultiplexed samples (DNA + RNA);</p></li>
+<li><p><strong>[InPreD core X metric]</strong> - LocalApp-generated <em>MetricsOutput.tsv</em> values deemed
+important in the InPreD context despite having no associated USL/LSL values;</p></li>
+<li><p><strong>[LocalApp X metric]</strong> - all remaining LocalApp-generated <em>MetricsOutput.tsv</em>
+values.</p></li>
+</ul>
+<blockquote>
+<div><p>Information about LocalApp core metrics can be found in the LocalApp v2.2 manual
+on pages 20-21. These metrics are also represented on sample QC plots generated
+by the <a class="reference internal" href="sample_data_postprocessing.html"><span class="doc">sample data post-processing</span></a> tool.</p>
+</div></blockquote>
+</section>
 <section id="input-files">
 <h2>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -134,7 +158,7 @@ optional arguments:
 <li><p><strong>[tool_output_directory]/intermediate_metrics_files/master_metrics_table.tsv</strong>: aggregated analysis-run metrics for all input <em>MetricsOutput.tsv</em> files;</p></li>
 <li><p><strong>[tool_output_directory]/intermediate_metrics_files/[run_label_N]_metrics.tsv</strong>: parsed and transposed analysis-run metrics table for Nth input <em>MetricsOutput.tsv</em> file (the corresponding <em>run_label</em> value is used in the file name).</p></li>
 </ul>
-<p>(last updated: 2022-03-03)</p>
+<p>(last updated: 2022-03-07)</p>
 </section>
 </section>
 
@@ -160,6 +184,7 @@ optional arguments:
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>Metrics plotting</strong> tool</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#metric-types">Metric types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#input-files">Input files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-the-tool">Running the tool</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a></li>
@@ -168,8 +193,6 @@ optional arguments:
 <li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sample_data_postprocessing.html"><strong>Sample data post-processing</strong> tool</a></li>
-<li class="toctree-l1"><a class="reference internal" href="DNA_sample_postprocessing.html"><strong>DNA sample post-processing</strong> tool</a></li>
-<li class="toctree-l1"><a class="reference internal" href="RNA_sample_postprocessing.html"><strong>RNA sample post-processing</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="software_versions.html">Software versions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>

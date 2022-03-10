@@ -1,7 +1,7 @@
 Change log
 ==========
 
-22-02-28 (TSOPPI version 0.3)
+22-03-10 (TSOPPI version 0.3)
 
 - updated:
 
@@ -43,6 +43,10 @@ Change log
   - :doc:`the metrics plotting tool </metrics_plotting>` now has to be invoked via a wrapper bash script
     ("process_metrics_files.sh") that first activates the necessary Conda environment
     (the parameter setup has not been changed however);
+  - "--create_plots" {True,False} option has been added to the metrics plotting tool; disabling
+    the metrics plotting functionality can be advantageous when the only desired
+    output are text-based metrics tables (typically in scenarios when many
+    runs are being processed together);
   - WARNING messages are now being output to STDERR logs;
   - multiple changes to the CNV summary output tables:
 
