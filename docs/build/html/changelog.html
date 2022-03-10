@@ -34,7 +34,7 @@
             
   <section id="change-log">
 <h1>Change log<a class="headerlink" href="#change-log" title="Permalink to this headline">¶</a></h1>
-<p>22-02-28 (TSOPPI version 0.3)</p>
+<p>22-03-10 (TSOPPI version 0.3)</p>
 <ul class="simple">
 <li><p>updated:</p>
 <ul>
@@ -80,6 +80,10 @@ which was inconsistent with the PCGR annotation).</p></li>
 <li><p><a class="reference internal" href="metrics_plotting.html"><span class="doc">the metrics plotting tool</span></a> now has to be invoked via a wrapper bash script
 (“process_metrics_files.sh”) that first activates the necessary Conda environment
 (the parameter setup has not been changed however);</p></li>
+<li><p>“–create_plots” {True,False} option has been added to the metrics plotting tool; disabling
+the metrics plotting functionality can be advantageous when the only desired
+output are text-based metrics tables (typically in scenarios when many
+runs are being processed together);</p></li>
 <li><p>WARNING messages are now being output to STDERR logs;</p></li>
 <li><p>multiple changes to the CNV summary output tables:</p>
 <ul>

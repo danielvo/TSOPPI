@@ -127,6 +127,9 @@ optional arguments:
                      label of the run which should be highlighted in the
                      output plots (if not supplied, the last supplied label
                      will determine the highlighted run)
+ -n {True,False}, --create_plots {True,False}
+                     True/False value determining whether the output metric plots PDF document
+                     should be created; if set to &quot;False&quot;, only the transposed and merged metrics files will be produced
 </pre></div>
 </div>
 <p>Example invocation using the Docker image:</p>
@@ -158,7 +161,7 @@ optional arguments:
 <li><p><strong>[tool_output_directory]/intermediate_metrics_files/master_metrics_table.tsv</strong>: aggregated analysis-run metrics for all input <em>MetricsOutput.tsv</em> files;</p></li>
 <li><p><strong>[tool_output_directory]/intermediate_metrics_files/[run_label_N]_metrics.tsv</strong>: parsed and transposed analysis-run metrics table for Nth input <em>MetricsOutput.tsv</em> file (the corresponding <em>run_label</em> value is used in the file name).</p></li>
 </ul>
-<p>(last updated: 2022-03-07)</p>
+<p>(last updated: 2022-03-10)</p>
 </section>
 </section>
 

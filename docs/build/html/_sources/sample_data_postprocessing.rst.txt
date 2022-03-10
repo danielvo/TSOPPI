@@ -1,8 +1,6 @@
 **Sample data post-processing** tool
 ====================================
 
-**Under construction..**
-
 About
 -----
 Separate analysis pipelines are run by the LocalApp software for DNA and RNA samples,
