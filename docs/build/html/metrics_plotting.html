@@ -82,6 +82,17 @@ by the <a class="reference internal" href="sample_data_postprocessing.html"><spa
 (these are specified with the <em>--run_completion_status_file</em> parameter).</p></li>
 </ul>
 </section>
+<section id="additional-notes">
+<h2>Additional notes<a class="headerlink" href="#additional-notes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>The <em>-r</em>/<em>–run_completion_status_file</em> parameter value can be set to &quot;NA&quot;
+whenever the corresponding file is not available (for example NovaSeq machines
+do not even generate this file). Runs with missing values will be omitted in
+the <em>[Sequencer flowcell run metric]</em>-type plots.</p></li>
+<li><p>If creating metrics plots is not desirable (e.g., quickly generating output
+metrics files is the only goal), the &quot;–create_plots&quot; option can be set to &quot;True&quot;.</p></li>
+</ul>
+</section>
 <section id="running-the-tool">
 <h2>Running the tool<a class="headerlink" href="#running-the-tool" title="Permalink to this headline">¶</a></h2>
 <p>Command line options:</p>
@@ -103,7 +114,7 @@ will be tied to the Nth supplied run label).
                      TSO500 LocalApp analysis run
  -r RUN_COMPLETION_STATUS_FILE, --run_completion_status_file RUN_COMPLETION_STATUS_FILE
                      absolute path to the RunCompletionStatus.xml file of a
-                     given TSO500 sequencing run
+                     given TSO500 sequencing run; can be set to &#39;NA&#39; if the file is not available
  -l RUN_LABEL, --run_label RUN_LABEL
                      a label that should be used for referring to given run
                      in the output files and plots
@@ -189,6 +200,7 @@ optional arguments:
 <li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#metric-types">Metric types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#input-files">Input files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-notes">Additional notes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-the-tool">Running the tool</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a></li>
 </ul>

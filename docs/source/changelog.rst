@@ -47,6 +47,9 @@ Change log
     the metrics plotting functionality can be advantageous when the only desired
     output are text-based metrics tables (typically in scenarios when many
     runs are being processed together);
+  - parameter "--run_completion_status_file" of the metrics plotting tool can
+    now have value \"NA\" (if for example a suitable RunCompletionStatus.xml
+    file is not available);
   - WARNING messages are now being output to STDERR logs;
   - multiple changes to the CNV summary output tables:
 

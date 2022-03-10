@@ -45,6 +45,15 @@ Input files
 - **[sequencer_output_directory]/RunCompletionStatus.xml** files for n>=1 runs
   (these are specified with the *\--run_completion_status_file* parameter).
 
+Additional notes
+----------------
+
+- The *-r*/*--run_completion_status_file* parameter value can be set to \"NA\"
+  whenever the corresponding file is not available (for example NovaSeq machines
+  do not even generate this file). Runs with missing values will be omitted in
+  the *[Sequencer flowcell run metric]*-type plots.
+- If creating metrics plots is not desirable (e.g., quickly generating output
+  metrics files is the only goal), the \"--create_plots\" option can be set to \"True\".
 
 Running the tool
 ----------------
@@ -70,7 +79,7 @@ Command line options:
                         TSO500 LocalApp analysis run
     -r RUN_COMPLETION_STATUS_FILE, --run_completion_status_file RUN_COMPLETION_STATUS_FILE
                         absolute path to the RunCompletionStatus.xml file of a
-                        given TSO500 sequencing run
+                        given TSO500 sequencing run; can be set to 'NA' if the file is not available
     -l RUN_LABEL, --run_label RUN_LABEL
                         a label that should be used for referring to given run
                         in the output files and plots
