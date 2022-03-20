@@ -1,7 +1,16 @@
 Change log
 ==========
 
-22-03-10 (TSOPPI version 0.3)
+22-03-20 (TSOPPI version 0.3.1)
+
+- bug fix:
+
+  - in the tumor content adjusted plots within the \*_CNV_distribution_plots.pdf
+    output file, patient sample values below the visible range were plotted at
+    the maximum visible values instead of being plotted at the minimum visible values;
+    this bug is now fixed.
+
+22-03-10 (TSOPPI version 0.3.0)
 
 - updated:
 
