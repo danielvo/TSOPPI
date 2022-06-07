@@ -1,6 +1,16 @@
 Change log
 ==========
 
+22-06-07 (TSOPPI version 0.3.2)
+
+- bug fix:
+
+  - tumor sample variants not present in the provided variant recurrence table
+    could cause TSOPPI to crash during sample post-processing;
+    the issue should now be fixed, and these novel variants should be labeled with
+    \"no_recurrence_data\" flag in the 'Class_judgement_comments' column
+    of the variant interpretation table.
+
 22-03-20 (TSOPPI version 0.3.1)
 
 - bug fix:
